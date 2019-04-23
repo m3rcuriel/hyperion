@@ -1,0 +1,21 @@
+From 5e87a83989647bb567fa9224b1576b52a2f62b54 Mon Sep 17 00:00:00 2001
+From: Lee Mracek <lee.mracek@gmail.com>
+Date: Tue, 23 Apr 2019 18:16:22 -0400
+Subject: [PATCH] Add cc toolchain files to rustc dependencies (for linker)
+
+
+diff --git a/rust/private/rustc.bzl b/rust/private/rustc.bzl
+index 7a8b900..157d148 100644
+--- a/rust/private/rustc.bzl
++++ b/rust/private/rustc.bzl
+@@ -194,6 +194,7 @@ def rustc_compile_action(
+         dep_info.transitive_libs +
+         [toolchain.rustc] +
+         toolchain.crosstool_files +
++        ctx.files._cc_toolchain +
+         ([] if linker_script == None else [linker_script]),
+         transitive = [
+             toolchain.rustc_lib.files,
+-- 
+2.21.0
+
