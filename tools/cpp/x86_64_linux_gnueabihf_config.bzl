@@ -276,6 +276,7 @@ def _impl(ctx):
     cxx_builtin_include_directories = [
         "/usr/include/c++/7",
         "/usr/lib/clang/8.0.1/include",
+        "/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include",
         "/usr/include",
     ]
 
