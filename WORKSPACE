@@ -4,11 +4,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 HYPERION_URL = "http://hyperion-project.s3-us-west-2.amazonaws.com/"
 
-local_repository(
-    name = "io_bazel_rules_rust",
-    path = "/home/lee/Robotics/hyperion-project/rules_rust",
-)
-
 http_archive(
     name = "io_bazel_rules_rust",
     strip_prefix = "rules_rust-81076de8aa74dccd6eef27e64b5b9772efc6678e",
