@@ -1,0 +1,13 @@
+namespace Test_Fbs;
+
+struct Vec3 {
+  x:float;
+  y:float;
+  z:float;
+}
+
+table TestFbs {
+  pos:Vec3 (id:0);
+}
+
+root_type TestFbs;
