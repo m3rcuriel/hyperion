@@ -12,7 +12,8 @@ http_archive(
         "https://github.com/bazelbuild/rules_rust/archive/81076de8aa74dccd6eef27e64b5b9772efc6678e.tar.gz",
     ],
     # TODO(m3rcuriel) remove patch when rules_rust upstreams this
-    patches = ["@//third_party:rules_rust_toolchain_files.patch"],
+    patches = ["@//third_party:rules_rust_toolchain_files.patch",
+               "@//third_party:rules_rust_disgusting.patch"],
     patch_args = ["-p1"],
 )
 
@@ -36,3 +37,9 @@ http_archive(
     sha256 = "e992f5ac09c36ab31c65ddc825e63854b49567b5d82d947bb89b34a728535051",
     urls = [HYPERION_URL + "x86_64_clang_sysroot-e992f5ac09c36ab3.tar.gz"],
 )
+
+load("//tools/cpp:register.bzl", register_cpp_toolchains="register_toolchains")
+register_cpp_toolchains()
+
+load("//tools/rust:register.bzl", register_rust_toolchains="register_toolchains")
+register_rust_toolchains()

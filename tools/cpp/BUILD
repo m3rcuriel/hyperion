@@ -48,13 +48,20 @@ toolchain(
     name = "cc-compiler-x86_64-toolchain",
     toolchain = ":cc-compiler-x86_64",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+    exec_compatible_with = [
+        "@bazel_tools//platforms:x86_64",
+        "@bazel_tools//platforms:linux",
+    ],
+    target_compatible_with = [
+        "@bazel_tools//platforms:x86_64",
+        "@bazel_tools//platforms:linux",
+    ],
 )
 
 cc_toolchain(
     name = "cc-compiler-x86_64",
     all_files = ":clang_x86_64_linux_gnueabihf_files",
     compiler_files = ":clang_x86_64_linux_gnueabihf_compiler_files",
-    cpu = "x86_64",
     dwp_files = ":empty",
     dynamic_runtime_lib = ":empty",
     linker_files = ":clang_x86_64_linux_gnueabihf_linker_files",

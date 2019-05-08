@@ -1,0 +1,180 @@
+diff --git a/rust/private/rustc.bzl b/rust/private/rustc.bzl
+index 7a8b900..9b6b2ab 100644
+--- a/rust/private/rustc.bzl
++++ b/rust/private/rustc.bzl
+@@ -25,6 +25,8 @@ load(
+ load("@bazel_skylib//lib:versions.bzl", "versions")
+ load("@bazel_version//:def.bzl", "BAZEL_VERSION")
+
++load("@io_bazel_rules_rust//rust:toolchain.bzl", "RustTargetConfigInfo")
++
+ CrateInfo = provider(
+     fields = {
+         "name": "str: The name of this crate.",
+@@ -197,7 +199,7 @@ def rustc_compile_action(
+         ([] if linker_script == None else [linker_script]),
+         transitive = [
+             toolchain.rustc_lib.files,
+-            toolchain.rust_lib.files,
++            toolchain.target[RustTargetConfigInfo].rust_stdlib.files,
+         ],
+     )
+ 
+@@ -218,7 +220,7 @@ def rustc_compile_action(
+ 
+     args.add("--emit=dep-info,link")
+     args.add("--color=always")
+-    args.add("--target=" + toolchain.target_triple)
++    args.add("--target=" + toolchain.target[RustTargetConfigInfo].target_triple)
+     if hasattr(ctx.attr, "crate_features"):
+         args.add_all(getattr(ctx.attr, "crate_features"), before_each = "--cfg", format_each = 'feature="%s"')
+     if hasattr(ctx.attr, "linker_script") and linker_script != None:
+@@ -323,9 +325,9 @@ def _compute_rpaths(toolchain, output_dir, dep_info):
+     """
+     if not dep_info.transitive_dylibs:
+         return depset([])
+-    if toolchain.os != "linux":
++    if toolchain.dylib_ext == None:
+         fail("Runtime linking is not supported on {}, but found {}".format(
+-            toolchain.os,
++            toolchain.target[RustTargetConfigInfo].name,
+             dep_info.transitive_dylibs,
+         ))
+ 
+diff --git a/rust/repositories.bzl b/rust/repositories.bzl
+index fab17a2..f3deaf5 100644
+--- a/rust/repositories.bzl
++++ b/rust/repositories.bzl
+@@ -278,7 +278,7 @@ def _load_rust_stdlib(ctx, target_triple):
+         workspace_name = ctx.attr.name,
+     )
+ 
+-    return stdlib_BUILD + toolchain_BUILD
++    return stdlib_BUILD# + toolchain_BUILD
+ 
+ def _rust_toolchain_repository_impl(ctx):
+     """The implementation of the rust toolchain repository rule."""
+@@ -295,6 +295,8 @@ def _rust_toolchain_repository_impl(ctx):
+ def _rust_toolchain_repository_proxy_impl(ctx):
+     BUILD_components = []
+     for target_triple in [ctx.attr.exec_triple] + ctx.attr.extra_target_triples:
++        pass
++    """
+         BUILD_components.append(BUILD_for_toolchain(
+             name = "{toolchain_prefix}_{target_triple}".format(
+                 toolchain_prefix = ctx.attr.toolchain_name_prefix,
+@@ -304,6 +306,7 @@ def _rust_toolchain_repository_proxy_impl(ctx):
+             parent_workspace_name = ctx.attr.parent_workspace_name,
+             target_triple = target_triple,
+         ))
++    """
+ 
+     ctx.file("WORKSPACE", "")
+     ctx.file("BUILD", "\n".join(BUILD_components))
+@@ -399,4 +402,4 @@ def rust_repository_set(name, version, exec_triple, extra_target_triples, iso_da
+         ))
+ 
+     # Register toolchains
+-    native.register_toolchains(*all_toolchain_names)
++    #native.register_toolchains(*all_toolchain_names)
+diff --git a/rust/toolchain.bzl b/rust/toolchain.bzl
+index 4f6ff22..d58c572 100644
+--- a/rust/toolchain.bzl
++++ b/rust/toolchain.bzl
+@@ -2,6 +2,60 @@
+ The rust_toolchain rule definition and implementation.
+ """
+ 
++RustTargetConfigInfo = provider(fields=["target_triple",
++                                        "target_constraints",
++                                        "dylib_ext",
++                                        "staticlib_ext",
++                                        "binary_ext",
++                                        "rust_stdlib"])
++
++def _rust_toolchain_target_config_impl(ctx):
++    dylib_ext = ctx.attr.dylib_ext if ctx.attr.supports_dynamic_linking else None
++
++    return RustTargetConfigInfo(
++        target_triple = ctx.attr.target_triple,
++        target_constraints = ctx.attr.target_constraints,
++        binary_ext = ctx.attr.binary_ext,
++        dylib_ext = dylib_ext,
++        staticlib_ext = ctx.attr.staticlib_ext,
++        rust_stdlib = ctx.attr.rust_stdlib,
++    )
++
++rust_toolchain_target_config = rule(
++    _rust_toolchain_target_config_impl,
++    attrs = {
++        "target_triple": attr.string(
++            doc = "The target triple this toolchain corresponds to.",
++            mandatory = True,
++        ),
++        "target_constraints": attr.label_list(
++            doc = "The platform constraints this target should be matched to.",
++            mandatory = True,
++            allow_empty = False,
++            providers = [
++                platform_common.ConstraintValueInfo,
++            ],
++        ),
++        "supports_dynamic_linking": attr.bool(
++            doc = "Whether or not this target supports dynamic linking",
++        ),
++        "binary_ext": attr.string(
++            mandatory = True,
++        ),
++        "staticlib_ext": attr.string(
++            doc = "The extension for static libraries built for this target",
++            mandatory = True,
++        ),
++        "dylib_ext": attr.string(
++            doc = "The extension for dynamic libraries built for this target",
++        ),
++        "rust_stdlib": attr.label(
++            doc = '''The rust standard library. Empty if this target doesn't work with a standard library,
++                    i.e if building for an embedded target.''',
++        )
++    }
++)
++
+ def _rust_toolchain_impl(ctx):
+     compilation_mode_opts = {}
+     for k, v in ctx.attr.opt_level.items():
+@@ -16,12 +70,8 @@ def _rust_toolchain_impl(ctx):
+         rustc = ctx.file.rustc,
+         rust_doc = ctx.file.rust_doc,
+         rustc_lib = ctx.attr.rustc_lib,
+-        rust_lib = ctx.attr.rust_lib,
+-        staticlib_ext = ctx.attr.staticlib_ext,
+-        dylib_ext = ctx.attr.dylib_ext,
+-        target_triple = ctx.attr.target_triple,
+-        exec_triple = ctx.attr.exec_triple,
+-        os = ctx.attr.os,
++        target = ctx.attr.target,
++        exec_target = ctx.attr.exec_target,
+         default_edition = ctx.attr.default_edition,
+         compilation_mode_opts = compilation_mode_opts,
+         crosstool_files = ctx.files._crosstool,
+@@ -42,18 +92,12 @@ rust_toolchain = rule(
+         "rustc_lib": attr.label(
+             doc = "The libraries used by rustc during compilation.",
+         ),
+-        "rust_lib": attr.label(
+-            doc = "The rust standard library.",
+-        ),
+-        "staticlib_ext": attr.string(mandatory = True),
+-        "dylib_ext": attr.string(mandatory = True),
+-        "os": attr.string(mandatory = True),
+         "default_edition": attr.string(
+             doc = "The edition to use for rust_* rules that don't specify an edition.",
+             default = "2015",
+         ),
+-        "exec_triple": attr.string(),
+-        "target_triple": attr.string(),
++        "exec_target": attr.label(),
++        "target": attr.label(),
+         "_crosstool": attr.label(
+             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+         ),
