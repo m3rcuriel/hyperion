@@ -13,7 +13,8 @@ http_archive(
     ],
     # TODO(m3rcuriel) remove patch when rules_rust upstreams this
     patches = ["@//third_party:rules_rust_toolchain_files.patch",
-               "@//third_party:rules_rust_disgusting.patch"],
+               "@//third_party:rules_rust_disgusting.patch",
+               "@//third_party:rules_rust_proc_macro_transition.patch"],
     patch_args = ["-p1"],
 )
 
