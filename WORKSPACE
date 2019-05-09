@@ -12,9 +12,10 @@ http_archive(
         "https://github.com/bazelbuild/rules_rust/archive/81076de8aa74dccd6eef27e64b5b9772efc6678e.tar.gz",
     ],
     # TODO(m3rcuriel) remove patch when rules_rust upstreams this
+    # TODO(m3rcuriel) re-add proc macro patch once it works again
     patches = ["@//third_party:rules_rust_toolchain_files.patch",
-               "@//third_party:rules_rust_disgusting.patch",
-               "@//third_party:rules_rust_proc_macro_transition.patch"],
+               "@//third_party:rules_rust_disgusting.patch"],
+#               "@//third_party:rules_rust_proc_macro_transition.patch"],
     patch_args = ["-p1"],
 )
 
