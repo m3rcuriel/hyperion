@@ -45,3 +45,6 @@ register_cpp_toolchains()
 
 load("//tools/rust:register.bzl", register_rust_toolchains="register_toolchains")
 register_rust_toolchains()
+
+load("//cargo:crates.bzl", "raze_fetch_remote_crates")
+raze_fetch_remote_crates()
