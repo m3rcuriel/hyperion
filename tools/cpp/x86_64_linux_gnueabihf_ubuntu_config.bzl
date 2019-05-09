@@ -1,9 +1,11 @@
-load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
-     "tool_path",
-     "feature",
-     "flag_group",
-     "flag_set",
-     "with_feature_set")
+load(
+    "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
+    "feature",
+    "flag_group",
+    "flag_set",
+    "tool_path",
+    "with_feature_set",
+)
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 
 all_link_actions = [
@@ -13,50 +15,52 @@ all_link_actions = [
 ]
 
 def _impl(ctx):
+    distro = "x86_64_linux_gnueabihf_" + ctx.attr.distro
+
     tool_paths = [
         tool_path(
             name = "ar",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-ar",
+            path = "%s/x86_64-linux-gnueabihf-ar" % distro,
         ),
         tool_path(
             name = "compat-ld",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-ld",
+            path = "%s/x86_64-linux-gnueabihf-ld" % distro,
         ),
         tool_path(
             name = "cpp",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-cpp",
+            path = "%s/x86_64-linux-gnueabihf-cpp" % distro,
         ),
         tool_path(
             name = "dwp",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-dwp",
+            path = "%s/x86_64-linux-gnueabihf-dwp" % distro,
         ),
         tool_path(
             name = "gcc",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-clang",
+            path = "%s/x86_64-linux-gnueabihf-clang" % distro,
         ),
         tool_path(
             name = "gcov",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-gcov",
+            path = "%s/x86_64-linux-gnueabihf-gcov" % distro,
         ),
         tool_path(
             name = "ld",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-ld",
+            path = "%s/x86_64-linux-gnueabihf-ld" % distro,
         ),
         tool_path(
             name = "nm",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-nm",
+            path = "%s/x86_64-linux-gnueabihf-nm" % distro,
         ),
         tool_path(
             name = "objcopy",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-objcopy",
+            path = "%s/x86_64-linux-gnueabihf-objcopy" % distro,
         ),
         tool_path(
             name = "objdump",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-objdump",
+            path = "%s/x86_64-linux-gnueabihf-objdump" % distro,
         ),
         tool_path(
             name = "strip",
-            path = "x86_64_linux_gnueabihf/x86_64-linux-gnueabihf-strip",
+            path = "%s/x86_64-linux-gnueabihf-strip" % distro,
         ),
     ]
 
@@ -73,8 +77,8 @@ def _impl(ctx):
                             "-B%{sysroot}/usr/bin",
                             "-fuse-ld=lld",
                             "-nodefaultlibs",
-                            "-Lexternal/x86_64_clang_8/usr/lib/gcc/x86_64-linux-gnu/7",
-                            "-Lexternal/x86_64_clang_8/lib/x86_64-linux-gnu",
+                            "-Lexternal/x86_64_sysroot/usr/lib/gcc/x86_64-linux-gnu/7",
+                            "-Lexternal/x86_64_sysroot/lib/x86_64-linux-gnu",
                             "-lm",
                             "-lstdc++",
                             "-lgcc_s",
@@ -91,7 +95,7 @@ def _impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = [
-                            "-Wl,--gc-sections"
+                            "-Wl,--gc-sections",
                         ],
                     ),
                 ],
@@ -102,7 +106,7 @@ def _impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = [
-                            "-pie"
+                            "-pie",
                         ],
                     ),
                 ],
@@ -129,9 +133,9 @@ def _impl(ctx):
                         flags = [
                             "-fPIC",
                         ],
-                    )
+                    ),
                 ],
-            )
+            ),
         ],
     )
 
@@ -297,7 +301,7 @@ def _impl(ctx):
         compiler = "clang",
         abi_version = "x86_64",
         abi_libc_version = "2.19",
-        builtin_sysroot = "external/x86_64_clang_8",
+        builtin_sysroot = "external/x86_64_sysroot",
         tool_paths = tool_paths,
         cxx_builtin_include_directories = cxx_builtin_include_directories,
         features = features,
@@ -305,6 +309,8 @@ def _impl(ctx):
 
 cc_toolchain_config = rule(
     implementation = _impl,
-    attrs = {},
+    attrs = {
+        "distro": attr.string(mandatory = True),
+    },
     provides = [CcToolchainConfigInfo],
 )

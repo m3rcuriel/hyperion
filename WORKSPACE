@@ -6,16 +6,16 @@ HYPERION_URL = "http://hyperion-project.s3-us-west-2.amazonaws.com/"
 
 http_archive(
     name = "io_bazel_rules_rust",
+    #              "@//third_party:rules_rust_proc_macro_transition.patch"],
+    patch_args = ["-p1"],
+    # TODO(m3rcuriel) remove patch when rules_rust upstreams this
+    # TODO(m3rcuriel) re-add proc macro patch once it works again
+    patches = ["@//third_party:rules_rust_disgusting.patch"],
     strip_prefix = "rules_rust-81076de8aa74dccd6eef27e64b5b9772efc6678e",
     urls = [
         # Master branch as of 2019-4-23
         "https://github.com/bazelbuild/rules_rust/archive/81076de8aa74dccd6eef27e64b5b9772efc6678e.tar.gz",
     ],
-    # TODO(m3rcuriel) remove patch when rules_rust upstreams this
-    # TODO(m3rcuriel) re-add proc macro patch once it works again
-    patches = ["@//third_party:rules_rust_disgusting.patch"],
-#              "@//third_party:rules_rust_proc_macro_transition.patch"],
-    patch_args = ["-p1"],
 )
 
 http_archive(
@@ -26,24 +26,45 @@ http_archive(
 )
 
 load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
+
 rust_repositories()
 
 load("@io_bazel_rules_rust//:workspace.bzl", "bazel_version")
+
 bazel_version(name = "bazel_version")
 
 http_archive(
-    name = "x86_64_clang_8",
-    build_file = "//tools/cpp:x86_64_linux_gnueabihf.BUILD",
+    name = "x86_64_clang_8_bionic",
+    build_file = "//tools/cpp:x86_64_linux_gnueabihf_bionic_clang.BUILD",
+    sha256 = "e56f98a6b91f64cc6b968c25357bcc40f57ac1f363eb43a9d912fe3f79d66615",
     type = "tar.gz",
-    sha256 = "e992f5ac09c36ab31c65ddc825e63854b49567b5d82d947bb89b34a728535051",
-    urls = [HYPERION_URL + "x86_64_clang_sysroot-e992f5ac09c36ab3.tar.gz"],
+    urls = [HYPERION_URL + "x86_64_clang_bionic-e56f98a6b91f64cc.tar.gz"],
 )
 
-load("//tools/cpp:register.bzl", register_cpp_toolchains="register_toolchains")
+http_archive(
+    name = "x86_64_clang_8_disco",
+    build_file = "//tools/cpp:x86_64_linux_gnueabihf_disco_clang.BUILD",
+    sha256 = "6efc8bebb42e9d708538dac4040fd5a350a92a3c63c2c85bbe4e9477000d9479",
+    type = "tar.gz",
+    urls = [HYPERION_URL + "x86_64_clang_disco-6efc8bebb42e9d70.tar.gz"],
+)
+
+http_archive(
+    name = "x86_64_sysroot",
+    build_file = "//tools/cpp:x86_64_linux_gnueabihf_sysroot.BUILD",
+    sha256 = "42ad2f3fb590c23ee164a9f3e083f70ce70b4f2e0fa102331383e84630c05125",
+    type = "tar.gz",
+    urls = [HYPERION_URL + "x86_64_sysroot-42ad2f3fb590c23e.tar.gz"],
+)
+
+load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")
+
 register_cpp_toolchains()
 
-load("//tools/rust:register.bzl", register_rust_toolchains="register_toolchains")
+load("//tools/rust:register.bzl", register_rust_toolchains = "register_toolchains")
+
 register_rust_toolchains()
 
 load("//cargo:crates.bzl", "raze_fetch_remote_crates")
+
 raze_fetch_remote_crates()

@@ -1,7 +1,6 @@
 TOOLCHAINS = [
-    "//tools/rust:x86_64-linux-toolchain"
+    "//tools/rust:x86_64-linux-toolchain",
 ]
 
 def register_toolchains():
-  native.register_toolchains(*TOOLCHAINS)
-
+    native.register_toolchains(*TOOLCHAINS)

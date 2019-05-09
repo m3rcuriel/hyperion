@@ -1,0 +1,7 @@
+#!/bin/bash --norc
+
+export LD_DEBUG=files,libs
+
+exec -a x86_64-linux-gnueabihf-ld \
+        ${BAZEL_OUTPUT_ROOT}external/x86_64_clang_8_disco/usr/bin/lld \
+        "$@"

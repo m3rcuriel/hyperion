@@ -4,7 +4,7 @@ filegroup(
     name = "clang",
     srcs = [
         "x86_64-linux-gnueabihf-clang",
-        "@x86_64_clang_8//:clang",
+        "@x86_64_clang_8_bionic//:clang",
     ],
 )
 
@@ -12,7 +12,7 @@ filegroup(
     name = "ar",
     srcs = [
         "x86_64-linux-gnueabihf-ar",
-        "@x86_64_clang_8//:ar",
+        "@x86_64_clang_8_bionic//:ar",
     ],
 )
 
@@ -20,7 +20,7 @@ filegroup(
     name = "nm",
     srcs = [
         "x86_64-linux-gnueabihf-nm",
-        "@x86_64_clang_8//:nm",
+        "@x86_64_clang_8_bionic//:nm",
     ],
 )
 
@@ -28,7 +28,7 @@ filegroup(
     name = "ld",
     srcs = [
         "x86_64-linux-gnueabihf-ld",
-        "@x86_64_clang_8//:lld",
+        "@x86_64_clang_8_bionic//:lld",
     ],
 )
 
@@ -36,7 +36,7 @@ filegroup(
     name = "objcopy",
     srcs = [
         "x86_64-linux-gnueabihf-objcopy",
-        "@x86_64_clang_8//:objcopy",
+        "@x86_64_clang_8_bionic//:objcopy",
     ],
 )
 
@@ -44,7 +44,7 @@ filegroup(
     name = "objdump",
     srcs = [
         "x86_64-linux-gnueabihf-objdump",
-        "@x86_64_clang_8//:objdump",
+        "@x86_64_clang_8_bionic//:objdump",
     ],
 )
 
@@ -52,7 +52,7 @@ filegroup(
     name = "strip",
     srcs = [
         "x86_64-linux-gnueabihf-strip",
-        "@x86_64_clang_8//:strip",
+        "@x86_64_clang_8_bionic//:strip",
     ],
 )
 
@@ -60,7 +60,7 @@ filegroup(
     name = "as",
     srcs = [
         "x86_64-linux-gnueabihf-as",
-        "@x86_64_clang_8//:as",
+        "@x86_64_clang_8_bionic//:as",
     ],
 )
 
