@@ -1,26 +1,114 @@
+diff --git a/proto/proto.bzl b/proto/proto.bzl
+index 2817188..23a1113 100644
+--- a/proto/proto.bzl
++++ b/proto/proto.bzl
+@@ -216,6 +216,7 @@ rust_proto_library = rule(
+     toolchains = [
+         "@io_bazel_rules_rust//proto:toolchain",
+         "@io_bazel_rules_rust//rust:toolchain",
++        "@bazel_tools//tools/cpp:toolchain_type",
+     ],
+     doc = """
+ Builds a Rust library crate from a set of `proto_library`s.
+@@ -275,6 +276,7 @@ rust_grpc_library = rule(
+     toolchains = [
+         "@io_bazel_rules_rust//proto:toolchain",
+         "@io_bazel_rules_rust//rust:toolchain",
++        "@bazel_tools//tools/cpp:toolchain_type",
+     ],
+     doc = """
+ Builds a Rust library crate from a set of `proto_library`s suitable for gRPC.
+diff --git a/rust/private/rust.bzl b/rust/private/rust.bzl
+index 2cdcf98..f96bcde 100644
+--- a/rust/private/rust.bzl
++++ b/rust/private/rust.bzl
+@@ -334,7 +334,10 @@ rust_library = rule(
+                  _rust_library_attrs.items()),
+     fragments = ["cpp"],
+     host_fragments = ["cpp"],
+-    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
++    toolchains = [
++        "@io_bazel_rules_rust//rust:toolchain",
++        "@bazel_tools//tools/cpp:toolchain_type"
++    ],
+     doc = """
+ Builds a Rust library crate.
+ 
+@@ -417,7 +420,10 @@ rust_binary = rule(
+     executable = True,
+     fragments = ["cpp"],
+     host_fragments = ["cpp"],
+-    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
++    toolchains = [
++        "@io_bazel_rules_rust//rust:toolchain",
++        "@bazel_tools//tools/cpp:toolchain_type"
++    ],
+     doc = """
+ Builds a Rust binary crate.
+ 
+@@ -512,7 +518,10 @@ rust_test = rule(
+     fragments = ["cpp"],
+     host_fragments = ["cpp"],
+     test = True,
+-    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
++    toolchains = [
++        "@io_bazel_rules_rust//rust:toolchain",
++        "@bazel_tools//tools/cpp:toolchain_type"
++    ],
+     doc = """
+ Builds a Rust test crate.
+ 
+@@ -656,7 +665,10 @@ rust_benchmark = rule(
+     executable = True,
+     fragments = ["cpp"],
+     host_fragments = ["cpp"],
+-    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
++    toolchains = [
++        "@io_bazel_rules_rust//rust:toolchain",
++        "@bazel_tools//tools/cpp:toolchain_type"
++    ],
+     doc = """
+ Builds a Rust benchmark test.
+ 
 diff --git a/rust/private/rustc.bzl b/rust/private/rustc.bzl
-index 7a8b900..9b6b2ab 100644
+index 7a8b900..51da8f8 100644
 --- a/rust/private/rustc.bzl
 +++ b/rust/private/rustc.bzl
 @@ -25,6 +25,8 @@ load(
  load("@bazel_skylib//lib:versions.bzl", "versions")
  load("@bazel_version//:def.bzl", "BAZEL_VERSION")
-
+ 
 +load("@io_bazel_rules_rust//rust:toolchain.bzl", "RustTargetConfigInfo")
 +
  CrateInfo = provider(
      fields = {
          "name": "str: The name of this crate.",
-@@ -197,7 +199,7 @@ def rustc_compile_action(
+@@ -188,6 +190,14 @@ def rustc_compile_action(
+ 
+     linker_script = getattr(ctx.file, "linker_script") if hasattr(ctx.file, "linker_script") else None
+ 
++    cc_toolchain = find_cpp_toolchain(ctx)
++
++    if (len(BAZEL_VERSION) == 0 or
++         versions.is_at_least("0.25.0", BAZEL_VERSION)):
++        linker_depset = find_cpp_toolchain(ctx).all_files
++    else:
++        linker_depset = depset(ctx.files._cc_toolchain)
++
+     compile_inputs = depset(
+         crate_info.srcs +
+         getattr(ctx.files, "data", []) +
+@@ -197,7 +207,8 @@ def rustc_compile_action(
          ([] if linker_script == None else [linker_script]),
          transitive = [
              toolchain.rustc_lib.files,
 -            toolchain.rust_lib.files,
 +            toolchain.target[RustTargetConfigInfo].rust_stdlib.files,
++            linker_depset,
          ],
      )
  
-@@ -218,7 +220,7 @@ def rustc_compile_action(
+@@ -218,7 +229,7 @@ def rustc_compile_action(
  
      args.add("--emit=dep-info,link")
      args.add("--color=always")
@@ -29,7 +117,7 @@ index 7a8b900..9b6b2ab 100644
      if hasattr(ctx.attr, "crate_features"):
          args.add_all(getattr(ctx.attr, "crate_features"), before_each = "--cfg", format_each = 'feature="%s"')
      if hasattr(ctx.attr, "linker_script") and linker_script != None:
-@@ -323,9 +325,9 @@ def _compute_rpaths(toolchain, output_dir, dep_info):
+@@ -323,9 +334,9 @@ def _compute_rpaths(toolchain, output_dir, dep_info):
      """
      if not dep_info.transitive_dylibs:
          return depset([])
