@@ -61,6 +61,22 @@ def raze_fetch_remote_crates():
         build_file = Label("//cargo/remote:cloudabi-0.0.3.BUILD")
     )
 
+    _new_git_repository(
+        name = "raze__fixedvec__0_2_3",
+        remote = "https://github.com/m3rcuriel/fixedvec-rs",
+        commit = "c111bd0b1adc5e0cb3858e9aa94dbfdae74906c3",
+        build_file = Label("//cargo/remote:fixedvec-0.2.3.BUILD"),
+        init_submodules = True
+    )
+
+    _new_git_repository(
+        name = "raze__flatbuffers__0_6_0",
+        remote = "https://github.com/m3rcuriel/flatbuffers",
+        commit = "8e0f36371ee14352524daa66979470635555b640",
+        build_file = Label("//cargo/remote:flatbuffers-0.6.0.BUILD"),
+        init_submodules = True
+    )
+
     _new_http_archive(
         name = "raze__fuchsia_cprng__0_1_1",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/fuchsia-cprng/fuchsia-cprng-0.1.1.crate",
@@ -239,6 +255,15 @@ def raze_fetch_remote_crates():
         sha256 = "678054eb77286b51581ba43620cc911abf02758c91f93f479767aed0f90458b2",
         strip_prefix = "rdrand-0.4.0",
         build_file = Label("//cargo/remote:rdrand-0.4.0.BUILD")
+    )
+
+    _new_http_archive(
+        name = "raze__smallvec__0_6_9",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/smallvec/smallvec-0.6.9.crate",
+        type = "tar.gz",
+        sha256 = "c4488ae950c49d403731982257768f48fada354a5203fe81f9bb6f43ca9002be",
+        strip_prefix = "smallvec-0.6.9",
+        build_file = Label("//cargo/remote:smallvec-0.6.9.BUILD")
     )
 
     _new_http_archive(
