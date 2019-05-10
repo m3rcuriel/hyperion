@@ -10,7 +10,7 @@ filegroup(
 cc_toolchain_suite(
     name = "toolchain",
     toolchains = {
-        "k8-bionic|clang": "cc-compiler-bionic-x86_64",
+        "k8": "cc-compiler-bionic-x86_64",
         "k8-disco|clang": "cc-compiler-disco-x86_64",
     },
     visibility = ["//visibility:public"],

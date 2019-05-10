@@ -195,10 +195,10 @@ def _impl(ctx):
                             "-fPIE",
                             "-pipe",
                             "-isystem%{sysroot}/usr/include/c++/7",
+                            "-isystem%{sysroot}/usr/lib/llvm-8/lib/clang/8.0.1/include",
                             "-isystem%{sysroot}/usr/include/x86_64-linux-gnu/c++/7",
                             "-isystem%{sysroot}/usr/include/x86_64-linux-gnu",
                             "-isystem%{sysroot}/usr/include",
-                            "-isystem%{sysroot}/usr/lib/llvm-8/lib/clang/8.0.1/include",
                         ],
                     ),
                 ],
@@ -279,9 +279,10 @@ def _impl(ctx):
 
     cxx_builtin_include_directories = [
         "/usr/include/c++/7",
-        "/usr/lib/clang/8.0.1/include",
         "/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include",
+        "/usr/include/lib/llvm-8/lib/clang/8.0.1/include",
         "/usr/include",
+        "/usr/include/linux",
     ]
 
     features = [

@@ -52,9 +52,9 @@ http_archive(
 http_archive(
     name = "x86_64_sysroot",
     build_file = "//tools/cpp:x86_64_linux_gnueabihf_sysroot.BUILD",
-    sha256 = "42ad2f3fb590c23ee164a9f3e083f70ce70b4f2e0fa102331383e84630c05125",
+    sha256 = "06ab73ca2f67f328ea08314331ef4afb276ad14bf325d71916071b600c63bcc7",
     type = "tar.gz",
-    urls = [HYPERION_URL + "x86_64_sysroot-42ad2f3fb590c23e.tar.gz"],
+    urls = [HYPERION_URL + "x86_64_clang_sysroot-06ab73ca2f67f328.tar.gz"],
 )
 
 load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")
