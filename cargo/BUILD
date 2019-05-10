@@ -16,3 +16,11 @@ alias(
     name = "nalgebra",
     actual = "@raze__nalgebra__0_18_0//:nalgebra",
 )
+alias(
+    name = "nix",
+    actual = "@raze__nix__0_13_0//:nix",
+)
+sh_binary(
+    name = "regenerate",
+    srcs = ["regenerate.sh"],
+)

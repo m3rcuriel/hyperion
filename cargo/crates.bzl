@@ -53,6 +53,24 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__cc__1_0_36",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/cc/cc-1.0.36.crate",
+        type = "tar.gz",
+        sha256 = "a0c56216487bb80eec9c4516337b2588a4f2a2290d72a1416d930e4dcdb0c90d",
+        strip_prefix = "cc-1.0.36",
+        build_file = Label("//cargo/remote:cc-1.0.36.BUILD")
+    )
+
+    _new_http_archive(
+        name = "raze__cfg_if__0_1_7",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/cfg-if/cfg-if-0.1.7.crate",
+        type = "tar.gz",
+        sha256 = "11d43355396e872eefb45ce6342e4374ed7bc2b3a502d1b28e36d6e23c05d1f4",
+        strip_prefix = "cfg-if-0.1.7",
+        build_file = Label("//cargo/remote:cfg-if-0.1.7.BUILD")
+    )
+
+    _new_http_archive(
         name = "raze__cloudabi__0_0_3",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/cloudabi/cloudabi-0.0.3.crate",
         type = "tar.gz",
@@ -129,6 +147,15 @@ def raze_fetch_remote_crates():
         sha256 = "8e12856109b5cb8e2934b5e45e4624839416e1c6c1f7d286711a7a66b79db29d",
         strip_prefix = "nalgebra-0.18.0",
         build_file = Label("//cargo/remote:nalgebra-0.18.0.BUILD")
+    )
+
+    _new_http_archive(
+        name = "raze__nix__0_13_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/nix/nix-0.13.0.crate",
+        type = "tar.gz",
+        sha256 = "46f0f3210768d796e8fa79ec70ee6af172dacbe7147f5e69be5240a47778302b",
+        strip_prefix = "nix-0.13.0",
+        build_file = Label("//cargo/remote:nix-0.13.0.BUILD")
     )
 
     _new_http_archive(
@@ -273,6 +300,15 @@ def raze_fetch_remote_crates():
         sha256 = "612d636f949607bdf9b123b4a6f6d966dedf3ff669f7f045890d3a4a73948169",
         strip_prefix = "typenum-1.10.0",
         build_file = Label("//cargo/remote:typenum-1.10.0.BUILD")
+    )
+
+    _new_http_archive(
+        name = "raze__void__1_0_2",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/void/void-1.0.2.crate",
+        type = "tar.gz",
+        sha256 = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d",
+        strip_prefix = "void-1.0.2",
+        build_file = Label("//cargo/remote:void-1.0.2.BUILD")
     )
 
     _new_http_archive(
