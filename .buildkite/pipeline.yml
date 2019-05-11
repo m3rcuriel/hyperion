@@ -4,7 +4,7 @@ steps:
       - docker-compose#v3.0.3:
             build: hyperion
 
-  - label: ":docker: Test %n"
+  - label: ":docker: Test"
     command: bazel test //... --host_platform=bionic-linux-x86_64
     plugins:
       - docker-compose#v3.0.3:
