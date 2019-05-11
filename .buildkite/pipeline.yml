@@ -4,6 +4,8 @@ steps:
       - docker-compose#v3.0.3:
             build: hyperion
 
+  - wait
+
   - label: ":docker: Test"
     command: bazel test //... --host_platform=//tools/platforms:bionic-linux-x86_64
     plugins:
