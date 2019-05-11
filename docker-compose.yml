@@ -2,9 +2,9 @@ version: "3.2"
 
 services:
   hyperion:
-    build: .
+    build: docker/builder
     container_name: hyperion
-    image: hyperion
+    image: valkyrieregistry.azurecr.io/hyperion/builder
     command: /bin/bash
     stdin_open: true
     tty: true
@@ -17,8 +17,13 @@ services:
       - type: bind
         source: .
         target: /home/hyperion/hyperion
-      - type: volume
-        source: bazel-cache
-        target: /home/hyperion/.cache/bazel
-volumes:
-  bazel-cache:
+  hyperion_cached:
+    build:
+      context: .
+      dockerfile: docker/cached/Dockerfile
+    container_name: hyperion_cached
+    image: valkyrieregistry.azurecr.io/hyperion/cached
+    volumes:
+      - type: bind
+        source: .
+        target: /home/hyperion/hyperion

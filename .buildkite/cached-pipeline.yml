@@ -1,0 +1,10 @@
+steps:
+  - label: ":docker: Build"
+    plugins:
+      - docker-login#v2.0.1:
+            username: valkyrieregistry
+            server: valkyrieregistry.azurecr.io
+      - docker-compose#v3.0.3:
+            push: hyperion_cached
+            image-repository: valkyreregistry.azurecr.io
+
