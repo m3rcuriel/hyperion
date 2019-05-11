@@ -10,4 +10,4 @@ ENV HOME=/home/$USER
 RUN useradd -ms /bin/bash $USER \
   && sudo -u $USER mkdir -p $HOME/.cache/bazel
 USER hyperion
-WORKDIR /home/hyperion
+WORKDIR /home/hyperion/hyperion
