@@ -1,0 +1,24 @@
+version: "3.2"
+
+services:
+  hyperion:
+    build: .
+    container_name: hyperion
+    image: hyperion
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    shm_size: 8G
+    environment:
+      - UID
+    tmpfs:
+      - /tmp:exec
+    volumes:
+      - type: bind
+        source: .
+        target: /home/hyperion/hyperion
+      - type: volume
+        source: bazel-cache
+        target: /home/hyperion/.cache/bazel
+volumes:
+  bazel-cache:
