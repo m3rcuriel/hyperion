@@ -17,13 +17,8 @@ services:
       - type: bind
         source: .
         target: /home/hyperion/hyperion
-  hyperion_cached:
-    build:
-      context: .
-      dockerfile: docker/cached/Dockerfile
-    container_name: hyperion_cached
-    image: valkyrieregistry.azurecr.io/hyperion/cached
-    volumes:
-      - type: bind
-        source: .
-        target: /home/hyperion/hyperion
+      - type: volume
+        source: bazel-cache
+        target: /home/hyperion/.cache/bazel
+volumes:
+  bazel-cache:
