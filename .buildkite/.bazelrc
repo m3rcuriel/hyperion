@@ -10,7 +10,7 @@ build --experimental_multi_threaded_digest
 build --sandbox_fake_hostname=true
 build --sandbox_fake_username=true
 
-startup --host_jvm_args=-Dbazel.DigestFunction=SHA1
+startup --host_jvm_args=-Dbazel.DigestFunction=SHA256
 
 common --watchfs
 
