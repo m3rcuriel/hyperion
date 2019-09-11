@@ -46,14 +46,14 @@ genrule(
     tools = [
       ":typenum_build_script",
     ],
-    local = 1,
-    cmd = "mkdir -p typenum_out_dir_outputs/;"
+    tags = ["no-sandbox"],
+    cmd = "mkdir -p $$(dirname $@)/typenum_out_dir_outputs/;"
         + " (export CARGO_MANIFEST_DIR=\"$$PWD/$$(dirname $(location :Cargo.toml))\";"
         # TODO(acmcarther): This needs to be revisited as part of the cross compilation story.
         #                   See also: https://github.com/google/cargo-raze/pull/54
         + " export TARGET='x86_64-unknown-linux-gnu';"
         + " export RUST_BACKTRACE=1;"
-        + " export OUT_DIR=$$PWD/typenum_out_dir_outputs;"
+        + " export OUT_DIR=$$PWD/$$(dirname $@)/typenum_out_dir_outputs;"
         + " export BINARY_PATH=\"$$PWD/$(location :typenum_build_script)\";"
         + " export OUT_TAR=$$PWD/$@;"
         + " cd $$(dirname $(location :Cargo.toml)) && $$BINARY_PATH && tar -czf $$OUT_TAR -C $$OUT_DIR .)"

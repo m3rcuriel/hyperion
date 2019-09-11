@@ -1,75 +1,3 @@
-diff --git a/proto/proto.bzl b/proto/proto.bzl
-index 2817188..23a1113 100644
---- a/proto/proto.bzl
-+++ b/proto/proto.bzl
-@@ -216,6 +216,7 @@ rust_proto_library = rule(
-     toolchains = [
-         "@io_bazel_rules_rust//proto:toolchain",
-         "@io_bazel_rules_rust//rust:toolchain",
-+        "@bazel_tools//tools/cpp:toolchain_type",
-     ],
-     doc = """
- Builds a Rust library crate from a set of `proto_library`s.
-@@ -275,6 +276,7 @@ rust_grpc_library = rule(
-     toolchains = [
-         "@io_bazel_rules_rust//proto:toolchain",
-         "@io_bazel_rules_rust//rust:toolchain",
-+        "@bazel_tools//tools/cpp:toolchain_type",
-     ],
-     doc = """
- Builds a Rust library crate from a set of `proto_library`s suitable for gRPC.
-diff --git a/rust/private/rust.bzl b/rust/private/rust.bzl
-index 2cdcf98..f96bcde 100644
---- a/rust/private/rust.bzl
-+++ b/rust/private/rust.bzl
-@@ -334,7 +334,10 @@ rust_library = rule(
-                  _rust_library_attrs.items()),
-     fragments = ["cpp"],
-     host_fragments = ["cpp"],
--    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
-+    toolchains = [
-+        "@io_bazel_rules_rust//rust:toolchain",
-+        "@bazel_tools//tools/cpp:toolchain_type"
-+    ],
-     doc = """
- Builds a Rust library crate.
- 
-@@ -417,7 +420,10 @@ rust_binary = rule(
-     executable = True,
-     fragments = ["cpp"],
-     host_fragments = ["cpp"],
--    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
-+    toolchains = [
-+        "@io_bazel_rules_rust//rust:toolchain",
-+        "@bazel_tools//tools/cpp:toolchain_type"
-+    ],
-     doc = """
- Builds a Rust binary crate.
- 
-@@ -512,7 +518,10 @@ rust_test = rule(
-     fragments = ["cpp"],
-     host_fragments = ["cpp"],
-     test = True,
--    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
-+    toolchains = [
-+        "@io_bazel_rules_rust//rust:toolchain",
-+        "@bazel_tools//tools/cpp:toolchain_type"
-+    ],
-     doc = """
- Builds a Rust test crate.
- 
-@@ -656,7 +665,10 @@ rust_benchmark = rule(
-     executable = True,
-     fragments = ["cpp"],
-     host_fragments = ["cpp"],
--    toolchains = ["@io_bazel_rules_rust//rust:toolchain"],
-+    toolchains = [
-+        "@io_bazel_rules_rust//rust:toolchain",
-+        "@bazel_tools//tools/cpp:toolchain_type"
-+    ],
-     doc = """
- Builds a Rust benchmark test.
- 
 diff --git a/rust/private/rustc.bzl b/rust/private/rustc.bzl
 index 7a8b900..51da8f8 100644
 --- a/rust/private/rustc.bzl
@@ -83,6 +11,13 @@ index 7a8b900..51da8f8 100644
  CrateInfo = provider(
      fields = {
          "name": "str: The name of this crate.",
+@@ -64,6 +64,4 @@ _get_rustc_env(
+         "CARGO_PKG_NAME": ctx.label.name,
+         "CARGO_PKG_DESCRIPTION": "",
+         "CARGO_PKG_HOMEPAGE": "",
+-        "CARGO_CFG_TARGET_OS": toolchain.os,
+-        "CARGO_CFG_TARGET_ARCH": toolchain.target_arch,
+     }
 @@ -188,6 +190,14 @@ def rustc_compile_action(
  
      linker_script = getattr(ctx.file, "linker_script") if hasattr(ctx.file, "linker_script") else None
@@ -98,13 +33,13 @@ index 7a8b900..51da8f8 100644
      compile_inputs = depset(
          crate_info.srcs +
          getattr(ctx.files, "data", []) +
-@@ -197,7 +207,8 @@ def rustc_compile_action(
+@@ -197,8 +207,8 @@ def rustc_compile_action(
          ([] if linker_script == None else [linker_script]),
          transitive = [
              toolchain.rustc_lib.files,
 -            toolchain.rust_lib.files,
 +            toolchain.target[RustTargetConfigInfo].rust_stdlib.files,
-+            linker_depset,
+             linker_depset,
          ],
      )
  
@@ -230,7 +165,7 @@ index 4f6ff22..d58c572 100644
  def _rust_toolchain_impl(ctx):
      compilation_mode_opts = {}
      for k, v in ctx.attr.opt_level.items():
-@@ -16,12 +70,8 @@ def _rust_toolchain_impl(ctx):
+@@ -16,13 +70,8 @@ def _rust_toolchain_impl(ctx):
          rustc = ctx.file.rustc,
          rust_doc = ctx.file.rust_doc,
          rustc_lib = ctx.attr.rustc_lib,
@@ -240,6 +175,7 @@ index 4f6ff22..d58c572 100644
 -        target_triple = ctx.attr.target_triple,
 -        exec_triple = ctx.attr.exec_triple,
 -        os = ctx.attr.os,
+-        target_arch = ctx.attr.target_triple.split("-")[0],
 +        target = ctx.attr.target,
 +        exec_target = ctx.attr.exec_target,
          default_edition = ctx.attr.default_edition,

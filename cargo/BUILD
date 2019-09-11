@@ -20,7 +20,3 @@ alias(
     name = "nix",
     actual = "@raze__nix__0_13_0//:nix",
 )
-sh_binary(
-    name = "regenerate",
-    srcs = ["regenerate.sh"],
-)

@@ -10,11 +10,12 @@ http_archive(
     patch_args = ["-p1"],
     # TODO(m3rcuriel) remove patch when rules_rust upstreams this
     # TODO(m3rcuriel) re-add proc macro patch once it works again
+    sha256 = "019958e96fcb9d8b5e5f74f31ad58f9c59804e8c04cf5aae03b983001edc79e0",
     patches = ["@//third_party:rules_rust_disgusting.patch"],
-    strip_prefix = "rules_rust-81076de8aa74dccd6eef27e64b5b9772efc6678e",
+    strip_prefix = "rules_rust-f727669b8ac3c9d237ed9bc7833b8e1eeec90506",
     urls = [
         # Master branch as of 2019-4-23
-        "https://github.com/bazelbuild/rules_rust/archive/81076de8aa74dccd6eef27e64b5b9772efc6678e.tar.gz",
+        "https://github.com/bazelbuild/rules_rust/archive/f727669b8ac3c9d237ed9bc7833b8e1eeec90506.tar.gz",
     ],
 )
 
