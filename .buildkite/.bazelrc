@@ -20,5 +20,3 @@ build --experimental_platforms_api
 
 build --incompatible_dont_enable_host_nonhost_crosstool_features
 build --incompatible_auto_configure_host_platform
-
-build --remote_cache=http://104.42.248.63:9090
