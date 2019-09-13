@@ -1,12 +1,26 @@
-from dataclasses import dataclass
 import numpy as np
 
 from experimental.lmracek.kalman.filter import Filter
 
-@dataclass
 class KalmanObservation():
-    Y: np.ndarray
-    U: np.ndarray
+    def __init__(self, Y=None, U=None):
+        self._U = U
+        self._Y = Y
+
+    def get_U(self):
+        return self._U
+
+    def get_Y(self):
+        return self._Y
+
+    def set_U(self, new_U):
+        self._U = new_U
+
+    def set_Y(self, new_Y):
+        self._Y = new_Y
+
+    Y = property(get_Y, set_Y)
+    U = property(get_U, set_U)
 
 class KalmanFilter(Filter):
     """A class providing a linear Kalman filter.

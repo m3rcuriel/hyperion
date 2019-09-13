@@ -4,7 +4,6 @@ py_library(
         "filter.py",
     ],
     visibility = ["//visibility:public"],
-    tags = [ "manual" ],
 )
 
 py_library(
@@ -16,7 +15,6 @@ py_library(
     deps = [
         ":filter",
     ],
-    tags = [ "manual" ],
 )
 
 py_test(
@@ -27,5 +25,4 @@ py_test(
     deps = [
         ":kalman_filter",
     ],
-    tags = [ "manual" ],
 )
