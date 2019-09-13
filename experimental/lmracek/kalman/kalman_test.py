@@ -118,14 +118,14 @@ def test_wrong_noisey_1d():
                           observation_model,
                           initial_state)
     obs = initial_state
-    for i in range(1, 100):
+    for i in range(1, 200):
         obs = F@obs
         kalman_filter.observe(KalmanObservation(Y=obs[0] + np.random.normal(0, 1e-5),
                                          U=np.array([[0]])))
 
 
-    assert abs(kalman_filter.X[1] - obs[1]) <= 1e-5
-    assert abs(kalman_filter.X[1] - 1.0) <= 1e-5
+    assert abs(kalman_filter.X[1] - obs[1]) <= 2e-5
+    assert abs(kalman_filter.X[1] - 1.0) <= 2e-5
 
 def test_wrong_model_1d():
     # this test represents a cart moving on a 1d road
@@ -156,4 +156,5 @@ def test_wrong_model_1d():
     assert abs(kalman_filter.X[1] - 1.0) <= 1e-5
 
 if __name__ == "__main__":
+    np.random.seed(23)
     sys.exit(pytest.main([__file__]))
