@@ -1,6 +1,6 @@
 FROM ubuntu:bionic
 
-RUN apt-get update ; apt-get install -y curl sudo gnupg patch git python3 python3-pytest python3-numpy
+RUN apt-get update ; apt-get install -y curl sudo gnupg patch git python3 python3-pytest python3-numpy gcc
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 ENV USER=hyperion
