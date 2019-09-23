@@ -1,5 +1,15 @@
 package(default_visibility = ["//visibility:public"])
 
+constraint_value(
+    name = "none",
+    constraint_setting = "@bazel_tools//platforms:os",
+)
+
+constraint_value(
+    name = "cortex-m7f",
+    constraint_setting = "@bazel_tools//platforms:cpu",
+)
+
 constraint_setting(
     name = "distro",
 )
@@ -39,5 +49,13 @@ platform(
     ],
     parents = [
         "linux-x86_64",
+    ],
+)
+
+platform(
+    name = "cortex-m7f-none",
+    constraint_values = [
+        ":none",
+        ":cortex-m7f",
     ],
 )

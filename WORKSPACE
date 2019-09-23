@@ -26,9 +26,16 @@ http_archive(
     url = "https://github.com/bazelbuild/bazel-skylib/archive/0.6.0.tar.gz",
 )
 
-load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
+load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repository_set")
 
-rust_repositories()
+RUST_VERSION = "1.35.0"
+
+rust_repository_set(
+    name = "rust_linux_x86_64",
+    exec_triple = "x86_64-unknown-linux-gnu",
+    extra_target_triples = ["armv7-none-eabi"],
+    version = RUST_VERSION,
+)
 
 load("@io_bazel_rules_rust//:workspace.bzl", "bazel_version")
 
@@ -56,6 +63,14 @@ http_archive(
     sha256 = "06ab73ca2f67f328ea08314331ef4afb276ad14bf325d71916071b600c63bcc7",
     type = "tar.gz",
     urls = [HYPERION_URL + "x86_64_clang_sysroot-06ab73ca2f67f328.tar.gz"],
+)
+
+http_archive(
+    name = "arm_none_eabi_gcc",
+    build_file = "//tools/cpp:arm_none_eabi_gcc.BUILD",
+    type = "tar.bz2",
+    urls = [HYPERION_URL + "gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2"],
+    strip_prefix="gcc-arm-none-eabi-8-2019-q3-update",
 )
 
 load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")

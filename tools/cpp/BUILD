@@ -1,4 +1,5 @@
 load(":x86_64_linux_gnueabihf_ubuntu_config.bzl", x86_64_configure = "cc_toolchain_config")
+load(":arm_none_eabi_gcc_config.bzl", arm_configure = "cc_toolchain_config")
 
 package(default_visibility = ["//tools/cpp:__pkg__"])
 
@@ -12,6 +13,7 @@ cc_toolchain_suite(
     toolchains = {
         "k8": "cc-compiler-bionic-x86_64",
         "k8-disco|clang": "cc-compiler-disco-x86_64",
+        "m7f": "cc-compiler-cortex-m7f",
     },
     visibility = ["//visibility:public"],
 )
@@ -144,4 +146,67 @@ cc_toolchain(
     toolchain_config = ":x86_64_toolchain_disco_config",
     toolchain_identifier = "x86_64",
     visibility = ["//visibility:public"],
+)
+
+arm_configure(
+    name = "arm_cortex_m7f_config",
+    cpu = "cortex-m7",
+    fpu = "fpv5-sp-d16",
+)
+
+filegroup(
+    name = "arm_none_eabi_gcc_files",
+    srcs = [
+        "//tools/cpp/arm_none_eabi_gcc:tool-wrappers",
+        "@arm_none_eabi_gcc//:compiler_pieces",
+    ],
+)
+
+filegroup(
+    name = "arm_none_eabi_gcc_compiler_files",
+    srcs = [
+        "//tools/cpp/arm_none_eabi_gcc:as",
+        "//tools/cpp/arm_none_eabi_gcc:gcc",
+        "//tools/cpp/arm_none_eabi_gcc:ld",
+    ],
+)
+
+filegroup(
+    name = "arm_none_eabi_gcc_linker_files",
+    srcs = [
+        "//tools/cpp/arm_none_eabi_gcc:ar",
+        "//tools/cpp/arm_none_eabi_gcc:gcc",
+        "//tools/cpp/arm_none_eabi_gcc:ld",
+        "@arm_none_eabi_gcc//:compiler_pieces",
+    ],
+)
+
+cc_toolchain(
+    name = "cc-compiler-cortex-m7f",
+    all_files = ":arm_none_eabi_gcc_files",
+    compiler_files = ":arm_none_eabi_gcc_compiler_files",
+    dwp_files = ":empty",
+    dynamic_runtime_lib = ":empty",
+    linker_files = ":arm_none_eabi_gcc_linker_files",
+    objcopy_files = "//tools/cpp/arm_none_eabi_gcc:objcopy",
+    static_runtime_lib = ":empty",
+    strip_files = "//tools/cpp/arm_none_eabi_gcc:strip",
+    supports_param_files = 1,
+    toolchain_config = "arm_cortex_m7f_config",
+    toolchain_identifier = "cortex-m7f",
+    visibility = ["//visibility:public"],
+)
+
+toolchain(
+    name = "cc-compiler-cortex-m7f-toolchain",
+    exec_compatible_with = [
+        "@bazel_tools//platforms:x86_64",
+        "@bazel_tools//platforms:linux",
+    ],
+    target_compatible_with = [
+        "//tools/platforms:cortex-m7f",
+        "//tools/platforms:none",
+    ],
+    toolchain = ":cc-compiler-cortex-m7f",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )

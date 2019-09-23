@@ -295,7 +295,7 @@ def _impl(ctx):
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         toolchain_identifier = "x86_64",
-        host_system_name = "linux",
+        host_system_name = "local",
         target_system_name = "x86_64",
         target_cpu = "x86_64",
         target_libc = "2.19",
