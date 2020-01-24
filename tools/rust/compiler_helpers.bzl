@@ -37,7 +37,7 @@ filegroup(
     )
 
 
-def BUILD_for_stdlib(name, binary_ext, staticlib_ext, dylib_ext, triple):
+def BUILD_for_stdlib(binary_ext, staticlib_ext, dylib_ext, triple):
   return """
 filegroup(
   name = "rust_lib-{target_triple}",
@@ -60,7 +60,7 @@ filegroup(
     )
 
 
-def BUILD_for_rust_toolchain(workspace_name, name, binary_ext, staticlib_ext, dylib_ext, target_triple, default_edition = "2018"):
+def BUILD_for_rust_toolchain(workspace_name, name, binary_ext, staticlib_ext, dylib_ext, target_triple, rustc_name, default_edition = "2018"):
     """Emits a toolchain declaration to match an existing compiler and stdlib.
 
     Args:
@@ -69,15 +69,13 @@ def BUILD_for_rust_toolchain(workspace_name, name, binary_ext, staticlib_ext, dy
       target_triple: The rust-style target triple of the tool
     """
 
-    system = triple_to_system(target_triple)
-
     return """
 rust_toolchain(
     name = "{toolchain_name}_impl",
     rust_doc = "@{workspace_name}//:rustdoc",
     rust_lib = "@{workspace_name}//:rust_lib-{target_triple}",
-    rustc = "@{workspace_name}//:rustc",
-    rustc_lib = "@{workspace_name}//:rustc_lib",
+    rustc = "@{rustc_name}//:rustc",
+    rustc_lib = "@{rustc_name}//:rustc_lib",
     staticlib_ext = "{staticlib_ext}",
     dylib_ext = "{dylib_ext}",
     os = "{system}",
@@ -88,6 +86,7 @@ rust_toolchain(
 """.format(
         toolchain_name = name,
         workspace_name = workspace_name,
+        rustc_name = rustc_name,
         staticlib_ext = staticlib_ext,
         dylib_ext = dylib_ext,
         system = "STUB",
@@ -111,86 +110,81 @@ toolchain(
         target_constraint = target_compatible_with,
     )
 
-
-ToolchainProvider = provider()
-
-def _rust_toolchain_definition_impl(ctx):
-  toolchain = ToolchainProvider(target_triple = ctx.attr.target_triple,
-                                dylib_ext = ctx.attr.dylib_ext,
-                                binary_ext = ctx.attr.binary_ext,
-                                staticlib_ext = ctx.attr.staticlib_ext,
-                                exec_compatible_with = ctx.attr.exec_compatible_with,
-                                target_compatible_with = ctx.attr.target_compatible_with,
-                                )
-  return [toolchain]
-
-rust_toolchain_definition = rule(
-    providers = [ToolchainProvider],
-    attrs = {
-        "target_triple": attr.string(mandatory = True),
-        "dylib_ext": attr.string(mandatory = True),
-        "binary_ext": attr.string(mandatory = True),
-        "staticlib_ext": attr.string(mandatory = True),
-        "exec_compatible_with": attr.label_list(mandatory = True, providers = ConstraintValueInfo),
-        "target_compatible_with": attr.label_list(mandatory = True, providers = ConstraintValueInfo),
-    },
-)
-
 def _rust_toolchain_repository_impl(ctx):
-    host_definition = ctx.attr.host_definition
+  BUILD_components = []
+  if ctx.attr.external_compiler == "":
     load_arbitrary_tool(
         ctx,
         iso_date = ctx.attr.iso_date,
         param_prefix = "rustc_",
-        target_triple = host_definition.target_triple,
+        target_triple = ctx.attr.target_triple,
         tool_name = "rustc",
         tool_subdirectory = "rustc",
         version = ctx.attr.version,
     )
 
-    BUILD_components = [BUILD_for_compiler(host_definition.binary_ext,
-                                           host_definition.staticlib_ext,
-                                           host_definition.dylib_ext,
-                                           host_definition.target_triple)]
+    load_arbitrary_tool(
+        ctx,
+        iso_date = ctx.attr.iso_date,
+        param_prefix = "rust-std_",
+        target_triple = ctx.attr.target_triple,
+        tool_name = "rust-std",
+        tool_subdirectory = "rust-std-{}".format(ctx.attr.target_triple),
+        version = ctx.attr.version,
+    )
 
-    for target_definition in [ctx.attr.host_definition] + ctx.attr.extra_definitions:
+    BUILD_components.append(BUILD_for_compiler(ctx.attr.binary_ext,
+                                           ctx.attr.staticlib_ext,
+                                           ctx.attr.dylib_ext,
+                                           ctx.attr.target_triple))
+    BUILD_components.append(BUILD_for_stdlib(ctx.attr.binary_ext,
+                                        ctx.attr.staticlib_ext,
+                                        ctx.attr.dylib_ext,
+                                        ctx.attr.target_triple))
+    BUILD_components.append(BUILD_for_rust_toolchain(name = "toolchain_for_{triple}".format(
+        triple = ctx.attr.target_triple),
+                                                      binary_ext = ctx.attr.binary_ext,
+                                                      staticlib_ext = ctx.attr.staticlib_ext,
+                                                      dylib_ext = ctx.attr.dylib_ext,
+                                                      target_triple = ctx.attr.target_triple,
+                                                      workspace_name = ctx.attr.name,
+                                                      rustc_name = ctx.attr.name,
+                                                  ))
+  else:
         load_arbitrary_tool(
             ctx,
             iso_date = ctx.attr.iso_date,
             param_prefix = "rust-std_",
-            target_triple = target_definition.target_triple,
+            target_triple = ctx.attr.target_triple,
             tool_name = "rust-std",
-            tool_subdirectory = "rust-std-{}".format(target_definition.target_triple),
+            tool_subdirectory = "rust-std-{}".format(ctx.attr.target_triple),
             version = ctx.attr.version,
         )
 
-        BUILD_components.append(BUILD_for_stdlib(host_definition.binary_ext,
-                                           host_definition.staticlib_ext,
-                                           host_definition.dylib_ext,
-                                           host_definition.target_triple))
         BUILD_components.append(BUILD_for_rust_toolchain(name = "toolchain_for_{triple}".format(
-            triple = target_definition.target_triple),
-                                                         binary_ext = target_definition.binary_ext,
-                                                         staticlib_ext = target_definition.staticlib_ext,
-                                                         dylib_ext = target_definition.dylib_ext,
-                                                         target_triple = target_definition.target_triple,
+            triple = ctx.attr.target_triple),
+                                                         binary_ext = ctx.attr.binary_ext,
+                                                         staticlib_ext = ctx.attr.staticlib_ext,
+                                                         dylib_ext = ctx.attr.dylib_ext,
+                                                         target_triple = ctx.attr.target_triple,
                                                          workspace_name = ctx.attr.name,
+                                                         rustc_name = ctx.attr.external_compiler,
                                                       ))
-        BUILD_components.append(BUILD_for_toolchain(name = "toolchain_for_{triple}".format(triple = target_definition.target_triple),
-                                                    target_compatible_with = target_definition.target_compatible_with,
-                                                    exec_compatible_with = target_definition.exec_compatible_with))
 
 
-    ctx.file("WORKSPACE", "")
-    ctx.file("BUILD", "\n".join(BUILD_components))
+  ctx.file("WORKSPACE", "")
+  ctx.file("BUILD", "\n".join(BUILD_components))
 
 
 rust_toolchain_repository = repository_rule(
     attrs = {
         "version": attr.string(mandatory = True),
         "iso_date": attr.string(),
-        "host_definition": attr.label(mandatory = True, providers = ToolchainProvider),
-        "extra_definitions": attr.label_list(providers = ToolchainProvider),
+        "dylib_ext": attr.string(mandatory = True),
+        "staticlib_ext": attr.string(mandatory = True),
+        "binary_ext": attr.string(mandatory = True),
+        "target_triple": attr.string(mandatory = True),
+        "external_compiler": attr.string(),
     },
     implementation = _rust_toolchain_repository_impl,
 )
