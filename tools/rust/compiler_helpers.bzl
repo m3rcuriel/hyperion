@@ -115,6 +115,7 @@ def _rust_toolchain_repository_impl(ctx):
             tool_name = "rustc",
             tool_subdirectory = "rustc",
             version = ctx.attr.version,
+            sha256 = ctx.attr.compiler_sha256,
         )
 
         load_arbitrary_tool(
@@ -125,6 +126,7 @@ def _rust_toolchain_repository_impl(ctx):
             tool_name = "rust-std",
             tool_subdirectory = "rust-std-{}".format(ctx.attr.target_triple),
             version = ctx.attr.version,
+            sha256 = ctx.attr.library_sha256,
         )
 
         BUILD_components.append(BUILD_for_compiler(
@@ -159,6 +161,7 @@ def _rust_toolchain_repository_impl(ctx):
             tool_name = "rust-std",
             tool_subdirectory = "rust-std-{}".format(ctx.attr.target_triple),
             version = ctx.attr.version,
+            sha256 = ctx.attr.library_sha256,
         )
 
         BUILD_components.append(BUILD_for_stdlib(
@@ -191,6 +194,8 @@ rust_toolchain_repository = repository_rule(
         "binary_ext": attr.string(mandatory = True),
         "target_triple": attr.string(mandatory = True),
         "external_compiler": attr.string(),
+        "compiler_sha256": attr.string(),
+        "library_sha256": attr.string(),
     },
     implementation = _rust_toolchain_repository_impl,
 )
