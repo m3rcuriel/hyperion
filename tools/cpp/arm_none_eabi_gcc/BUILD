@@ -1,0 +1,80 @@
+package(default_visibility = ["//tools/cpp:__pkg__"])
+
+filegroup(
+    name = "gcc",
+    srcs = [
+        "arm-none-eabi-gcc",
+        "@arm_none_eabi_gcc//:gcc",
+    ],
+)
+
+filegroup(
+    name = "ar",
+    srcs = [
+        "arm-none-eabi-ar",
+        "@arm_none_eabi_gcc//:ar",
+    ],
+)
+
+filegroup(
+    name = "ld",
+    srcs = [
+        "arm-none-eabi-ld",
+        "@arm_none_eabi_gcc//:ld",
+    ],
+)
+
+filegroup(
+    name = "nm",
+    srcs = [
+        "arm-none-eabi-nm",
+        "@arm_none_eabi_gcc//:nm",
+    ],
+)
+
+filegroup(
+    name = "objcopy",
+    srcs = [
+        "arm-none-eabi-objcopy",
+        "@arm_none_eabi_gcc//:objcopy",
+    ],
+)
+
+filegroup(
+    name = "objdump",
+    srcs = [
+        "arm-none-eabi-objdump",
+        "@arm_none_eabi_gcc//:objdump",
+    ],
+)
+
+filegroup(
+    name = "strip",
+    srcs = [
+        "arm-none-eabi-strip",
+        "@arm_none_eabi_gcc//:strip",
+    ],
+)
+
+filegroup(
+    name = "as",
+    srcs = [
+        "arm-none-eabi-as",
+        "@arm_none_eabi_gcc//:as",
+    ],
+)
+
+filegroup(
+    name = "tool-wrappers",
+    srcs = [
+        ":ar",
+        ":as",
+        ":gcc",
+        ":ld",
+        ":nm",
+        ":objcopy",
+        ":objdump",
+        ":strip",
+    ],
+)
+

@@ -50,6 +50,14 @@ http_archive(
     urls = [HYPERION_URL + "x86_64_clang_sysroot-06ab73ca2f67f328.tar.gz"],
 )
 
+http_archive(
+    name = "arm_none_eabi_gcc",
+    build_file = "//tools/cpp:arm_none_eabi_gcc.BUILD",
+    type = "tar.bz2",
+    urls = [HYPERION_URL + "gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2"],
+    strip_prefix="gcc-arm-none-eabi-8-2019-q3-update",
+)
+
 load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")
 
 register_cpp_toolchains()

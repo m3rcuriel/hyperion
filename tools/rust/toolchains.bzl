@@ -27,6 +27,15 @@ TARGET_DEFS = [
                 "@bazel_tools//platforms:x86_64",
             ],
         ),
+        [
+          _platform_target(
+              "thumbv7em-none-eabihf",
+              [
+                  "//tools/platforms:none",
+                  "//tools/platforms:cortex-m7f",
+              ],
+          ),
+        ]
     ),
 ]
 
