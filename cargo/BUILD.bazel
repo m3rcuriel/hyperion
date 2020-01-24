@@ -14,15 +14,13 @@ alias(
 )
 alias(
     name = "nalgebra",
-    actual = "@raze__nalgebra__0_18_0//:nalgebra",
+    actual = "@raze__nalgebra__0_18_1//:nalgebra",
 )
 alias(
-    name = "svd2rust",
-    actual = "@raze__svd2rust__0_17_0//:svd2rust",
+    name = "proc_macro2",
+    actual = "@raze__proc_macro2__1_0_8//:proc_macro2",
 )
 alias(
-    # Extra aliased target, from raze configuration
-    # N.B.: The exact form of this is subject to change.
-    name = "cargo_bin_svd2rust",
-    actual = "@raze__svd2rust__0_17_0//:cargo_bin_svd2rust",
+    name = "typenum",
+    actual = "@raze__typenum__1_10_0//:typenum",
 )

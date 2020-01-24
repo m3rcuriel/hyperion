@@ -37,9 +37,9 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__libc__0_2_54//:libc",
+        "@raze__libc__0_2_66//:libc",
         "@raze__rand_chacha__0_1_1//:rand_chacha",
-        "@raze__rand_core__0_4_0//:rand_core",
+        "@raze__rand_core__0_4_2//:rand_core",
         "@raze__rand_hc__0_1_0//:rand_hc",
         "@raze__rand_isaac__0_1_1//:rand_isaac",
         "@raze__rand_jitter__0_1_4//:rand_jitter",

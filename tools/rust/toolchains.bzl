@@ -17,6 +17,8 @@ def _platform_exec(triple, dylib, staticlib, binary, constraints, compilersha256
 def _target(exec, targets = []):
     return (exec, targets)
 
+
+RUST_VERSION = "1.40.0"
 TARGET_DEFS = [
     _target(
         _platform_exec(
@@ -48,7 +50,7 @@ def rust_toolchains():
     for execu, target_list in TARGET_DEFS:
         rust_toolchain_repository(
             name = "{}_host".format(execu.target_triple),
-            version = "1.40.0",
+            version = RUST_VERSION,
             dylib_ext = execu.dylib_ext,
             binary_ext = execu.binary_ext,
             staticlib_ext = execu.staticlib_ext,
@@ -60,7 +62,7 @@ def rust_toolchains():
         for target in target_list:
             rust_toolchain_repository(
                 name = "{}_{}".format(execu.target_triple, target.target_triple),
-                version = "1.40.0",
+                version = RUST_VERSION,
                 dylib_ext = execu.dylib_ext,
                 binary_ext = execu.binary_ext,
                 staticlib_ext = execu.staticlib_ext,
