@@ -79,6 +79,8 @@ def _impl(ctx):
                             "-nodefaultlibs",
                             "-Lexternal/x86_64_sysroot/usr/lib/gcc/x86_64-linux-gnu/7",
                             "-Lexternal/x86_64_sysroot/lib/x86_64-linux-gnu",
+                            "-Lexternal/x86_64_clang_8_{}/usr/lib/x86_64-linux-gnu".format(ctx.attr.distro),
+                            "-ldl",
                             "-lm",
                             "-lstdc++",
                             "-lgcc_s",
@@ -191,6 +193,7 @@ def _impl(ctx):
                         flags = [
                             "-nostdinc",
                             "-pipe",
+                            "--sysroot=external/x86_64_sysroot",
                             "-no-canonical-prefixes",
                             "-fPIE",
                             "-pipe",

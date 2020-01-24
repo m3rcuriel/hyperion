@@ -37,9 +37,9 @@ http_archive(
 http_archive(
     name = "x86_64_clang_8_disco",
     build_file = "//tools/cpp:x86_64_linux_gnueabihf_disco_clang.BUILD",
-    sha256 = "6efc8bebb42e9d708538dac4040fd5a350a92a3c63c2c85bbe4e9477000d9479",
+    sha256 = "724d25de8e7d758f160509e9d17687aca0522c08bd5e9c0b6a603cb1a60a8c47",
     type = "tar.gz",
-    urls = [HYPERION_URL + "x86_64_clang_disco-6efc8bebb42e9d70.tar.gz"],
+    urls = [HYPERION_URL + "x86_64_clang_disco-724d25de8e7d758f160509.tar.gz"],
 )
 
 http_archive(

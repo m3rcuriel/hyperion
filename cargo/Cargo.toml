@@ -9,8 +9,8 @@ path = "fake_lib.rs"
 [dependencies]
 nalgebra = "~0.18.0"
 flatbuffers = {git = "https://github.com/m3rcuriel/flatbuffers", branch = "fixedvec"}
-#svd2rust = "0.17.0"
-#libc = "0.2.66"
+svd2rust = "0.17.0"
+libc = "0.2.66"
 proc-macro2 = "1.0.8"
 typenum = "~1.10.0"
 
@@ -23,10 +23,26 @@ output_buildfile_suffix = "BUILD.bazel"
 # The target to generate BUILD rules for.
 target = "x86_64-unknown-linux-gnu"
 
+[raze.crates.log.'0.4.8']
+additional_flags = [
+  "--cfg=atomic_cas"
+]
+
+[raze.crates.backtrace.'0.3.42']
+gen_buildrs = true
+# Overriden to hand-written BUILD file, because libloading is building its own c portion.
+skipped_deps = [
+    "backtrace-sys-0.1.32",
+]
+additional_deps = [
+    "@//cargo/overrides/backtrace-sys-0.1.32:backtrace_sys",
+]
+
 [raze.crates.typenum.'1.10.0']
 gen_buildrs = true
 
 [raze.crates.svd2rust.'0.17.0']
+gen_buildrs = true
 extra_aliased_targets = [
   "cargo_bin_svd2rust"
 ]
