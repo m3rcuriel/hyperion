@@ -6,16 +6,12 @@ HYPERION_URL = "http://hyperion-project.s3-us-west-2.amazonaws.com/"
 
 http_archive(
     name = "io_bazel_rules_rust",
-    #              "@//third_party:rules_rust_proc_macro_transition.patch"],
+    strip_prefix = "rules_rust-a9103cd6260433fb04b36d9a3e1dc4d3ddceaa22",
     patch_args = ["-p1"],
-    # TODO(m3rcuriel) remove patch when rules_rust upstreams this
-    # TODO(m3rcuriel) re-add proc macro patch once it works again
-    sha256 = "019958e96fcb9d8b5e5f74f31ad58f9c59804e8c04cf5aae03b983001edc79e0",
-    patches = ["@//third_party:rules_rust_disgusting.patch"],
-    strip_prefix = "rules_rust-f727669b8ac3c9d237ed9bc7833b8e1eeec90506",
+    patches = ["//third_party:rules_rust_sha256.patch"],
     urls = [
         # Master branch as of 2019-4-23
-        "https://github.com/bazelbuild/rules_rust/archive/f727669b8ac3c9d237ed9bc7833b8e1eeec90506.tar.gz",
+        "https://github.com/bazelbuild/rules_rust/archive/a9103cd6260433fb04b36d9a3e1dc4d3ddceaa22.tar.gz",
     ],
 )
 
@@ -25,10 +21,6 @@ http_archive(
     strip_prefix = "bazel-skylib-0.6.0",
     url = "https://github.com/bazelbuild/bazel-skylib/archive/0.6.0.tar.gz",
 )
-
-load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
-
-rust_repositories()
 
 load("@io_bazel_rules_rust//:workspace.bzl", "bazel_version")
 
@@ -62,7 +54,9 @@ load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains"
 
 register_cpp_toolchains()
 
-load("//tools/rust:register.bzl", register_rust_toolchains = "register_toolchains")
+load("//tools/rust:toolchains.bzl", "rust_toolchains", register_rust_toolchains = "register_toolchains")
+
+rust_toolchains()
 
 register_rust_toolchains()
 
