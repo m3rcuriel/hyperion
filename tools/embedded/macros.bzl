@@ -11,34 +11,34 @@ def rust_cortexm_description(
         link = "//tools/embedded/hardware:link.x",
         suffix = ""):
     if suffix != "":
-        suffix = "{}_".format(suffix)
+        suffix = "_{}".format(suffix)
 
     native.genrule(
-        name = "{}_{}desc".format(name, suffix),
+        name = "{}{}_desc".format(name, suffix),
         srcs = ["//tools/embedded/descriptions:{}.svd".format(name)],
-        outs = ["{}_{}build.rs".format(name, suffix), "{}_{}lib.rs".format(name, suffix), "{}_{}device.x".format(name, suffix)],
+        outs = ["{}{}_build.rs".format(name, suffix), "{}{}_lib.rs".format(name, suffix), "{}{}_device.x".format(name, suffix)],
         cmd = """
 $(location //cargo:cargo_bin_svd2rust) -i $(SRCS)
-mv build.rs $(@D)/{0}_{1}build.rs
-mv lib.rs $(@D)/{0}_{1}lib.rs
-mv device.x $(@D)/{0}_{1}device.x
+mv build.rs $(@D)/{0}{1}_build.rs
+mv lib.rs $(@D)/{0}{1}_lib.rs
+mv device.x $(@D)/{0}{1}_device.x
 """.format(name, suffix),
         tools = ["//cargo:cargo_bin_svd2rust"],
     )
 
     if device == "":
-        device = "//tools/embedded:{}_{}device.x".format(name, suffix)
+        device = "//tools/embedded:{}{}_device.x".format(name, suffix)
 
     native.genrule(
-        name = "{}_{}link.x".format(name, suffix),
+        name = "{}{}_link.x".format(name, suffix),
         srcs = [device, memory, link],
-        outs = ["{}_{}link.ld".format(name, suffix)],
+        outs = ["{}{}_link.ld".format(name, suffix)],
         cmd = "cat $(location {0}) $(location {1}) $(location {2}) > $@".format(device, memory, link),
     )
 
     rust_library(
         name = "{}{}".format(name, suffix),
-        srcs = [":{}_{}lib.rs".format(name, suffix)],
+        srcs = [":{}{}_lib.rs".format(name, suffix)],
         deps = [
             "//cargo:cortex_m",
             "//cargo:bare_metal",

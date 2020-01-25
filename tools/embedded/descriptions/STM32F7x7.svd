@@ -37730,7 +37730,7 @@
             <usage>registers</usage>
          </addressBlock>
          <interrupt>
-            <name>LCD_TFT</name>
+            <name>LTDC</name>
             <description>LTDC global interrupt</description>
             <value>88</value>
          </interrupt>
