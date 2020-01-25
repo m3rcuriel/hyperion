@@ -11,4 +11,3 @@ steps:
     plugins:
       - docker-compose#v3.0.3:
           run: hyperion
-          leave-volumes: true
