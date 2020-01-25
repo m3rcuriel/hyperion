@@ -9,6 +9,18 @@ licenses([
   "notice" # See individual crates for specific licenses
 ])
 alias(
+    name = "as_slice",
+    actual = "@raze__as_slice__0_1_0//:as_slice",
+)
+alias(
+    name = "bare_metal",
+    actual = "@raze__bare_metal__0_2_5//:bare_metal",
+)
+alias(
+    name = "cortex_m",
+    actual = "@raze__cortex_m__0_6_2//:cortex_m",
+)
+alias(
     name = "flatbuffers",
     actual = "@raze__flatbuffers__0_6_0//:flatbuffers",
 )
@@ -37,4 +49,8 @@ alias(
 alias(
     name = "typenum",
     actual = "@raze__typenum__1_10_0//:typenum",
+)
+alias(
+    name = "vcell",
+    actual = "@raze__vcell__0_1_2//:vcell",
 )

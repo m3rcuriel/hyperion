@@ -9,10 +9,14 @@ path = "fake_lib.rs"
 [dependencies]
 nalgebra = "~0.18.0"
 flatbuffers = {git = "https://github.com/m3rcuriel/flatbuffers", branch = "fixedvec"}
-svd2rust = "0.17.0"
+svd2rust = {git =  "https://github.com/rust-embedded/svd2rust" }
 libc = "0.2.66"
 proc-macro2 = "1.0.8"
 typenum = "~1.10.0"
+cortex-m = "0.6"
+as-slice = "=0.1.0"
+bare-metal = "0.2.5"
+vcell = "0.1.2"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.

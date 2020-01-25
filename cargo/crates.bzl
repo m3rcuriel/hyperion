@@ -35,6 +35,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__aligned__0_3_2",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/aligned/aligned-0.3.2.crate",
+        type = "tar.gz",
+        sha256 = "eb1ce8b3382016136ab1d31a1b5ce807144f8b7eb2d5f16b2108f0f07edceb94",
+        strip_prefix = "aligned-0.3.2",
+        build_file = Label("//cargo/remote:aligned-0.3.2.BUILD.bazel")
+    )
+
+    _new_http_archive(
         name = "raze__ansi_term__0_11_0",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/ansi_term/ansi_term-0.11.0.crate",
         type = "tar.gz",
@@ -59,6 +68,15 @@ def raze_fetch_remote_crates():
         sha256 = "f0e60b75072ecd4168020818c0107f2857bb6c4e64252d8d3983f6263b40a5c3",
         strip_prefix = "approx-0.3.2",
         build_file = Label("//cargo/remote:approx-0.3.2.BUILD.bazel")
+    )
+
+    _new_http_archive(
+        name = "raze__as_slice__0_1_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/as-slice/as-slice-0.1.0.crate",
+        type = "tar.gz",
+        sha256 = "293dac66b274fab06f95e7efb05ec439a6b70136081ea522d270bc351ae5bb27",
+        strip_prefix = "as-slice-0.1.0",
+        build_file = Label("//cargo/remote:as-slice-0.1.0.BUILD.bazel")
     )
 
     _new_http_archive(
@@ -104,6 +122,15 @@ def raze_fetch_remote_crates():
         sha256 = "5d6575f128516de27e3ce99689419835fce9643a9b215a14d2b5b685be018491",
         strip_prefix = "backtrace-sys-0.1.32",
         build_file = Label("//cargo/remote:backtrace-sys-0.1.32.BUILD.bazel")
+    )
+
+    _new_http_archive(
+        name = "raze__bare_metal__0_2_5",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/bare-metal/bare-metal-0.2.5.crate",
+        type = "tar.gz",
+        sha256 = "5deb64efa5bd81e31fcd1938615a6d98c82eafcbcd787162b6f63b91d6bac5b3",
+        strip_prefix = "bare-metal-0.2.5",
+        build_file = Label("//cargo/remote:bare-metal-0.2.5.BUILD.bazel")
     )
 
     _new_http_archive(
@@ -158,6 +185,15 @@ def raze_fetch_remote_crates():
         sha256 = "ddfc5b9aa5d4507acaf872de71051dfd0e309860e88966e1051e462a077aac4f",
         strip_prefix = "cloudabi-0.0.3",
         build_file = Label("//cargo/remote:cloudabi-0.0.3.BUILD.bazel")
+    )
+
+    _new_http_archive(
+        name = "raze__cortex_m__0_6_2",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/cortex-m/cortex-m-0.6.2.crate",
+        type = "tar.gz",
+        sha256 = "2954942fbbdd49996704e6f048ce57567c3e1a4e2dc59b41ae9fde06a01fc763",
+        strip_prefix = "cortex-m-0.6.2",
+        build_file = Label("//cargo/remote:cortex-m-0.6.2.BUILD.bazel")
     )
 
     _new_http_archive(
@@ -555,6 +591,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__stable_deref_trait__1_1_1",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/stable_deref_trait/stable_deref_trait-1.1.1.crate",
+        type = "tar.gz",
+        sha256 = "dba1a27d3efae4351c8051072d619e3ade2820635c3958d826bfea39d59b54c8",
+        strip_prefix = "stable_deref_trait-1.1.1",
+        build_file = Label("//cargo/remote:stable_deref_trait-1.1.1.BUILD.bazel")
+    )
+
+    _new_http_archive(
         name = "raze__strsim__0_8_0",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/strsim/strsim-0.8.0.crate",
         type = "tar.gz",
@@ -572,13 +617,12 @@ def raze_fetch_remote_crates():
         build_file = Label("//cargo/remote:svd-parser-0.9.0.BUILD.bazel")
     )
 
-    _new_http_archive(
+    _new_git_repository(
         name = "raze__svd2rust__0_17_0",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/svd2rust/svd2rust-0.17.0.crate",
-        type = "tar.gz",
-        sha256 = "a9c9d66a8f1a494b5289c951bfc17fa9bffc78d2a4eab615cdf5162592bda020",
-        strip_prefix = "svd2rust-0.17.0",
-        build_file = Label("//cargo/remote:svd2rust-0.17.0.BUILD.bazel")
+        remote = "https://github.com/rust-embedded/svd2rust",
+        commit = "ee8a8a7831b96b1c7d19b9fac1819bcc8413eca8",
+        build_file = Label("//cargo/remote:svd2rust-0.17.0.BUILD.bazel"),
+        init_submodules = True
     )
 
     _new_http_archive(
@@ -663,6 +707,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__vcell__0_1_2",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/vcell/vcell-0.1.2.crate",
+        type = "tar.gz",
+        sha256 = "876e32dcadfe563a4289e994f7cb391197f362b6315dc45e8ba4aa6f564a4b3c",
+        strip_prefix = "vcell-0.1.2",
+        build_file = Label("//cargo/remote:vcell-0.1.2.BUILD.bazel")
+    )
+
+    _new_http_archive(
         name = "raze__vec_map__0_8_1",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/vec_map/vec_map-0.8.1.crate",
         type = "tar.gz",
@@ -678,6 +731,15 @@ def raze_fetch_remote_crates():
         sha256 = "914b1a6776c4c929a602fafd8bc742e06365d4bcbe48c30f9cca5824f70dc9dd",
         strip_prefix = "version_check-0.1.5",
         build_file = Label("//cargo/remote:version_check-0.1.5.BUILD.bazel")
+    )
+
+    _new_http_archive(
+        name = "raze__volatile_register__0_2_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/volatile-register/volatile-register-0.2.0.crate",
+        type = "tar.gz",
+        sha256 = "0d67cb4616d99b940db1d6bd28844ff97108b498a6ca850e5b6191a532063286",
+        strip_prefix = "volatile-register-0.2.0",
+        build_file = Label("//cargo/remote:volatile-register-0.2.0.BUILD.bazel")
     )
 
     _new_http_archive(

@@ -1,0 +1,14 @@
+load("//tools/embedded:macros.bzl", "rust_cortexm_description", "generate_all_default")
+
+generate_all_default([
+  "STM32F730",
+  "STM32F750",
+  "STM32F7x2",
+  "STM32F7x6",
+  "STM32F7x8",
+  "STM32F745",
+  "STM32F765",
+  "STM32F7x3",
+  "STM32F7x7",
+  "STM32F7x9",
+])
