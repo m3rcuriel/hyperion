@@ -6,9 +6,9 @@ HYPERION_URL = "http://hyperion-project.s3-us-west-2.amazonaws.com/"
 
 http_archive(
     name = "io_bazel_rules_rust",
-    strip_prefix = "rules_rust-a9103cd6260433fb04b36d9a3e1dc4d3ddceaa22",
     patch_args = ["-p1"],
     patches = ["//third_party:rules_rust_sha256.patch"],
+    strip_prefix = "rules_rust-a9103cd6260433fb04b36d9a3e1dc4d3ddceaa22",
     urls = [
         # Master branch as of 2019-4-23
         "https://github.com/bazelbuild/rules_rust/archive/a9103cd6260433fb04b36d9a3e1dc4d3ddceaa22.tar.gz",
@@ -53,9 +53,10 @@ http_archive(
 http_archive(
     name = "arm_none_eabi_gcc",
     build_file = "//tools/cpp:arm_none_eabi_gcc.BUILD",
+    sha256 = "b50b02b0a16e5aad8620e9d7c31110ef285c1dde28980b1a9448b764d77d8f92",
+    strip_prefix = "gcc-arm-none-eabi-8-2019-q3-update",
     type = "tar.bz2",
     urls = [HYPERION_URL + "gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2"],
-    strip_prefix="gcc-arm-none-eabi-8-2019-q3-update",
 )
 
 load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")

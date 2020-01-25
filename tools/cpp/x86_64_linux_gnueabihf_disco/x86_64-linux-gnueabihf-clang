@@ -2,7 +2,6 @@
 
 LD_LIBRARY_PATH="${BAZEL_OUTPUT_ROOT}external/x86_64_clang_8_disco/usr/lib/x86_64-linux-gnu"
 LD_LIBRARY_PATH+=":${BAZEL_OUTPUT_ROOT}external/x86_64_clang_8_disco/lib/x86_64-linux-gnu"
-
 export LD_LIBRARY_PATH
 
 exec \

@@ -1,1 +1,1 @@
-exports_files(["STM32F765.svd"])
+exports_files(glob(["*.svd"]))

@@ -11,7 +11,7 @@ def rust_cortexm_description(
         link = "//tools/embedded/hardware:link.x",
         suffix = ""):
     if suffix != "":
-        suffix = "_{}".format(suffix)
+        suffix = "{}_".format(suffix)
 
     native.genrule(
         name = "{}_{}desc".format(name, suffix),
