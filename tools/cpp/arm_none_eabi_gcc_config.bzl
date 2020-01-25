@@ -143,7 +143,7 @@ def _impl(ctx):
                             "-Wformat=2",
                             "-Werror",
                             "-Wstrict-aliasing",
-                            "-Wdouble-promotion", # because our fpu might be SP only
+                            "-Wdouble-promotion",  # because our fpu might be SP only
                             "-pipe",
                             "-fno-common",
                             "-ffreestanding",
