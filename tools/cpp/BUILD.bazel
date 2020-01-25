@@ -85,6 +85,8 @@ filegroup(
         "//tools/cpp/x86_64_linux_gnueabihf_bionic:as",
         "//tools/cpp/x86_64_linux_gnueabihf_bionic:clang",
         "//tools/cpp/x86_64_linux_gnueabihf_bionic:ld",
+        "@x86_64_clang_8_bionic//:compiler_libraries",
+        "@x86_64_sysroot//:compiler_libraries",
     ],
 )
 
