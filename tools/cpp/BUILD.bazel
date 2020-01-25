@@ -91,6 +91,17 @@ filegroup(
 )
 
 filegroup(
+    name = "clang_bionic_x86_64_linux_gnueabihf_ar_files",
+    srcs = [
+        "//tools/cpp/x86_64_linux_gnueabihf_bionic:ar",
+        "//tools/cpp/x86_64_linux_gnueabihf_bionic:clang",
+        "//tools/cpp/x86_64_linux_gnueabihf_bionic:ld",
+        "@x86_64_clang_8_bionic//:compiler_libraries",
+        "@x86_64_sysroot//:compiler_libraries",
+    ],
+)
+
+filegroup(
     name = "clang_bionic_x86_64_linux_gnueabihf_linker_files",
     srcs = [
         "//tools/cpp/x86_64_linux_gnueabihf_bionic:ar",
@@ -134,6 +145,7 @@ toolchain(
 cc_toolchain(
     name = "cc-compiler-bionic-x86_64",
     all_files = ":clang_bionic_x86_64_linux_gnueabihf_files",
+    ar_files = ":clang_bionic_x86_64_linux_gnueabihf_ar_files",
     compiler_files = ":clang_bionic_x86_64_linux_gnueabihf_compiler_files",
     dwp_files = ":empty",
     dynamic_runtime_lib = ":empty",
