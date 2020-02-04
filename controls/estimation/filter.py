@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
+
 class Filter(metaclass=ABCMeta):
     """ A class providing a general filter-like interface.
     """

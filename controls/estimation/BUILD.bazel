@@ -7,6 +7,15 @@ py_library(
 )
 
 py_library(
+    name = "python_init",
+    srcs = [
+        "__init__.py",
+    ],
+    deps = ["//controls:python_init"],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
     name = "kalman_filter",
     srcs = [
         "kalman.py",
@@ -14,6 +23,7 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":filter",
+        ":python_init",
     ],
 )
 
@@ -22,7 +32,9 @@ py_test(
     srcs = [
         "kalman_test.py",
     ],
+    legacy_create_init = False,
     deps = [
         ":kalman_filter",
+        ":python_init",
     ],
 )

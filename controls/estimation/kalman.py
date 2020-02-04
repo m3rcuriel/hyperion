@@ -1,8 +1,9 @@
 import numpy as np
 
-from experimental.lmracek.kalman.filter import Filter
+from controls.estimation.filter import Filter
 
-class KalmanObservation():
+
+class KalmanObservation:
     def __init__(self, Y=None, U=None):
         self._U = U
         self._Y = Y
@@ -22,6 +23,7 @@ class KalmanObservation():
     Y = property(get_Y, set_Y)
     U = property(get_U, set_U)
 
+
 class KalmanFilter(Filter):
     """A class providing a linear Kalman filter.
     """
@@ -33,19 +35,24 @@ class KalmanFilter(Filter):
 
         if initial_state is None:
             initial_state = np.zeros((self._state_size, 1))
-        assert initial_state.shape[0] == self._state_size, \
-            f"Initial state must match state size {self._state_size}"
-        assert initial_state.shape[1] == 1, f"Initial state must be a {self._state_size}x1 vector"
+        assert (
+            initial_state.shape[0] == self._state_size
+        ), f"Initial state must match state size {self._state_size}"
+        assert (
+            initial_state.shape[1] == 1
+        ), f"Initial state must be a {self._state_size}x1 vector"
         self._initial_state = initial_state
         self.X = initial_state
 
         assert Q.shape[0] == Q.shape[1], "Q must be a square matrix"
-        assert Q.shape[0] == self._state_size, \
-            f"Q must be a {self._state_size}x{self._state_size} matrix"
+        assert (
+            Q.shape[0] == self._state_size
+        ), f"Q must be a {self._state_size}x{self._state_size} matrix"
         self.Q = Q
 
-        assert B.shape[0] == self._state_size, \
-            f"control-input matrix must match state size {self._state_size}"
+        assert (
+            B.shape[0] == self._state_size
+        ), f"control-input matrix must match state size {self._state_size}"
         self._control_size = B.shape[0]
         self.B = B
 
@@ -53,11 +60,13 @@ class KalmanFilter(Filter):
         self._obs_size = R.shape[0]
         self.R = R
         if H is None:
-            assert self._state_size == self._obs_size, \
-                "If a H matrix is not provided, the state must match perfectly onto the observation"
+            assert (
+                self._state_size == self._obs_size
+            ), "If a H matrix is not provided, the state must match perfectly onto the observation"
             H = np.ones((self._state_size, self._state_size))
-        assert H.shape[0] == self._obs_size and \
-            H.shape[1] == self._state_size, f"H must be a {self._obs_size}x{self._state_size} matrix"
+        assert (
+            H.shape[0] == self._obs_size and H.shape[1] == self._state_size
+        ), f"H must be a {self._obs_size}x{self._state_size} matrix"
         self.H = H
 
         if P0 is None:
@@ -79,12 +88,14 @@ class KalmanFilter(Filter):
         innovation = self.R + self.H @ self.P @ self.H.T
         self.KalmanGain = P @ self.H.T @ np.linalg.inv(innovation)
         self.X = X + self.KalmanGain @ residual
-        self.P = (np.eye(self._state_size, self._state_size) - self.KalmanGain @ self.H) @ P
+        self.P = (
+            np.eye(self._state_size, self._state_size) - self.KalmanGain @ self.H
+        ) @ P
 
     def predict(self, system_input):
         X = self.F @ self.X + self.B @ system_input
         P = self.F @ self.P @ self.F.T + self.Q
-        
+
         return X
 
     def reset(self, state=None, cov=None):
