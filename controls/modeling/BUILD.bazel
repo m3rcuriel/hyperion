@@ -1,0 +1,31 @@
+py_library(
+    name = "python_init",
+    srcs = ["__init__.py"],
+    visibility = ["//visibility:public"],
+    deps = ["//controls:python_init"],
+)
+
+py_library(
+    name = "motors",
+    srcs = [
+        "dcmotor.py",
+        "common_motors.py",
+    ],
+    deps = [
+        ":python_init",
+        "//controls:util",
+    ],
+)
+
+py_test(
+    name = "motors_test",
+    srcs = [
+        "dcmotor_test.py",
+    ],
+    legacy_create_init = False,
+    main = "dcmotor_test.py",
+    deps = [
+        ":motors",
+        ":python_init"
+    ],
+)
