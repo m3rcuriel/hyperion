@@ -16,7 +16,7 @@ the important thing. It is the fact of doing that remains."</i><p><p align="cent
 
 ## About Hyperion
 
-Hyperion is a real-time general purpose robotics framework build in Rust.
+Hyperion is a real-time general purpose robotics framework built in Rust.
 
 ## Building Hyperion
 Currently Hyperion is only supported within a monolithic repository structure.

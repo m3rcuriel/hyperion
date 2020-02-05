@@ -1,0 +1,23 @@
+version: "3.2"
+
+services:
+  hyperion:
+    build: ../docker/builder
+    container_name: hyperion
+    image: valkyrieregistry.azurecr.io/hyperion/builder
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    shm_size: 8G
+    environment:
+      - UID
+    tmpfs:
+      - /tmp:exec
+    volumes:
+      - type: bind
+        source: ../
+        target: /home/hyperion/hyperion
+      - bazel-cache:/home/hyperion/.cache/bazel
+volumes:
+    bazel-cache:
+        external: true
