@@ -3,6 +3,7 @@ steps:
     plugins:
       - docker-compose#v3.0.3:
             build: hyperion
+            config: .buildkite/docker-compose.yml
 
   - wait
 
@@ -11,3 +12,4 @@ steps:
     plugins:
       - docker-compose#v3.0.3:
           run: hyperion
+          config: .buildkite/docker-compose.yml
