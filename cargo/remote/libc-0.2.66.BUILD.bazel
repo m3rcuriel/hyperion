@@ -38,10 +38,15 @@ rust_library(
         "--cap-lints=allow",
         "--cfg=libc_core_cvoid",
         "--cfg=libc_priv_mod_use",
+        "--cfg=libc_align",
+        "--cfg=libc_const_size_of",
+        "--cfg=libc_packedN",
     ],
     version = "0.2.66",
     crate_features = [
+        "align",
         "default",
+        "extra_traits",
         "std",
     ],
 )
