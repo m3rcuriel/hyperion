@@ -10,13 +10,14 @@ path = "fake_lib.rs"
 nalgebra = "~0.18.0"
 flatbuffers = {git = "https://github.com/m3rcuriel/flatbuffers", branch = "fixedvec"}
 svd2rust = {git =  "https://github.com/rust-embedded/svd2rust" }
-libc = "0.2.66"
+libc = {version = "0.2.60", features = [ "extra_traits", "align" ]}
 proc-macro2 = "1.0.8"
 typenum = "~1.10.0"
 cortex-m = "0.6"
 as-slice = "=0.1.0"
 bare-metal = "0.2.5"
 vcell = "0.1.2"
+nix = "0.17.0"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.
@@ -54,7 +55,10 @@ extra_aliased_targets = [
 [raze.crates.libc.'0.2.67']
 additional_flags = [
    "--cfg=libc_core_cvoid",
-   "--cfg=libc_priv_mod_use"
+   "--cfg=libc_priv_mod_use",
+   "--cfg=libc_align",
+   "--cfg=libc_const_size_of",
+   "--cfg=libc_packedN",
 ]
 
 [raze.crates.proc-macro2.'1.0.9']

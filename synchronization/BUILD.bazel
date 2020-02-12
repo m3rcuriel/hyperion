@@ -1,0 +1,11 @@
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library")
+
+rust_library(
+    name = "futex",
+    srcs = ["futex.rs"],
+    deps = [
+        "//utilities:unreachable",
+        "//cargo:libc",
+        "//cargo:nix",
+    ],
+)
