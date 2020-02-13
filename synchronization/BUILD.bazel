@@ -7,5 +7,6 @@ rust_library(
         "//utilities:unreachable",
         "//cargo:libc",
         "//cargo:nix",
+        "//cargo:lock_api",
     ],
 )

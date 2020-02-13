@@ -312,6 +312,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__lock_api__0_3_3",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/lock_api/lock_api-0.3.3.crate",
+        type = "tar.gz",
+        sha256 = "79b2de95ecb4691949fea4716ca53cdbcfccb2c612e19644a8bad05edcf9f47b",
+        strip_prefix = "lock_api-0.3.3",
+        build_file = Label("//cargo/remote:lock_api-0.3.3.BUILD.bazel")
+    )
+
+    _new_http_archive(
         name = "raze__log__0_4_8",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/log/log-0.4.8.crate",
         type = "tar.gz",
@@ -570,6 +579,15 @@ def raze_fetch_remote_crates():
         sha256 = "138e3e0acb6c9fb258b19b67cb8abd63c00679d2851805ea151465464fe9030a",
         strip_prefix = "rustc_version-0.2.3",
         build_file = Label("//cargo/remote:rustc_version-0.2.3.BUILD.bazel")
+    )
+
+    _new_http_archive(
+        name = "raze__scopeguard__1_0_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/scopeguard/scopeguard-1.0.0.crate",
+        type = "tar.gz",
+        sha256 = "b42e15e59b18a828bbf5c58ea01debb36b9b096346de35d941dcb89009f24a0d",
+        strip_prefix = "scopeguard-1.0.0",
+        build_file = Label("//cargo/remote:scopeguard-1.0.0.BUILD.bazel")
     )
 
     _new_http_archive(
