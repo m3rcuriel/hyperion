@@ -18,6 +18,7 @@ as-slice = "=0.1.0"
 bare-metal = "0.2.5"
 vcell = "0.1.2"
 nix = "0.17.0"
+lock_api = "0.3.3"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.

@@ -1,9 +1,24 @@
-use libc::{syscall, SYS_futex, timespec};
-use nix::{errno, Result};
+use libc::{syscall, timespec, SYS_futex, SYS_gettid};
+use nix::errno::Errno;
+use nix::{errno, Error as NixError, Result};
 use std::time;
 
-use std::thread_local;
+use lock_api::RawMutex;
+
+use std::sync::atomic::{AtomicI32, Ordering};
+
 use std::cell::RefCell;
+use std::thread_local;
+
+fn likely(a: bool) -> bool {
+    a
+}
+
+fn unlikely(a: bool) -> bool {
+    a
+}
+
+const FUTEX_TID_MASK: libc::pid_t = 0x3fffffff;
 
 enum WakeNumber {
     N(u32),
@@ -11,15 +26,17 @@ enum WakeNumber {
 }
 
 trait RawFutex {
-    fn wake(&mut self, wake: WakeNumber) -> Result<i32>;
-    fn wait(&mut self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
-    fn lock_pi(&mut self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
-    fn trylock_pi(&mut self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
-    fn compare_requeue_pi(&mut self, num_wake: WakeNumber, num_requeue: WakeNumber, m: &mut Self, val: u32) -> Result<i32>;
+    fn wake(&self, wake: WakeNumber) -> Result<i32>;
+    fn wait(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
+    fn lock_pi(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
+    fn trylock_pi(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
+    fn unlock_pi(&self) -> Result<i32>;
 }
 
 #[repr(align(4), C)]
-struct Futex(i32);
+struct Futex(AtomicI32);
+
+struct Mutex(Futex);
 
 #[repr(i32)]
 #[derive(Debug)]
@@ -46,19 +63,52 @@ thread_local! {
     static TID: RefCell<libc::pid_t> = RefCell::new(0);
 }
 
+#[allow(dead_code)]
 extern "C" fn clear_tid_on_fork() {
     TID.with(|t| *t.borrow_mut() = 0);
 }
 
-fn install_pthread_hook() -> Result<i32> {
+fn install_pthread_hook() {
     let result = unsafe { libc::pthread_atfork(None, None, Some(clear_tid_on_fork)) };
 
-    errno::Errno::result(result)
+    errno::Errno::result(result).unwrap_or_else(|_| {
+        panic!(
+            "pthread_atfork(None, None, {:p}) failed",
+            clear_tid_on_fork as *const ()
+        )
+    });
+}
+
+#[inline]
+fn gettid() -> libc::pid_t {
+    if unlikely(TID.with(|t| *t.borrow() == 0)) {
+        initialize_per_thread();
+    }
+
+    TID.with(|t| t.borrow().clone())
+}
+
+fn gettid_call() -> libc::pid_t {
+    let result = unsafe { syscall(SYS_gettid) as libc::pid_t };
+
+    errno::Errno::result(result).expect("gettid() failed")
+}
+
+static PTHREAD_ONCE: std::sync::Once = std::sync::Once::new();
+
+fn initialize_per_thread() {
+    TID.with(|t| *t.borrow() == gettid_call());
+    PTHREAD_ONCE.call_once(|| {
+        install_pthread_hook();
+    });
 }
 
 impl Futex {
-    fn wait_helper(&mut self, op: FutexOp, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
-        let timeout_ts = timeout.map(|d| timespec{tv_sec: d.as_secs() as i64, tv_nsec: d.subsec_nanos() as i64});
+    fn wait_helper(&self, op: FutexOp, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
+        let timeout_ts = timeout.map(|d| timespec {
+            tv_sec: d.as_secs() as i64,
+            tv_nsec: d.subsec_nanos() as i64,
+        });
 
         let timeout_ptr = if let Some(t) = timeout_ts {
             &t as *const timespec
@@ -67,7 +117,13 @@ impl Futex {
         };
 
         let result = unsafe {
-            syscall(SYS_futex, &mut self.0 as *mut i32, op, value, timeout_ts.map_or(std::ptr::null(), |t| &t as *const timespec)) as i32
+            syscall(
+                SYS_futex,
+                &self.0 as *const AtomicI32,
+                op,
+                value,
+                timeout_ptr,
+            ) as i32
         };
 
         errno::Errno::result(result)
@@ -78,34 +134,127 @@ impl Into<libc::c_int> for WakeNumber {
     fn into(self) -> libc::c_int {
         match self {
             WakeNumber::N(i) => i as i32,
-            WakeNumber::All => libc::c_int::max_value()
+            WakeNumber::All => libc::c_int::max_value(),
         }
     }
 }
 
 impl RawFutex for Futex {
-    fn wake(&mut self, wake: WakeNumber) -> Result<i32> {
+    fn wake(&self, wake: WakeNumber) -> Result<i32> {
         let wakenumber: libc::c_int = wake.into();
         let result = unsafe {
-            syscall(SYS_futex, &mut self.0 as *mut i32, FutexOp::Wake, wakenumber) as i32
+            syscall(
+                SYS_futex,
+                &self.0 as *const AtomicI32,
+                FutexOp::Wake,
+                wakenumber,
+            ) as i32
         };
 
         errno::Errno::result(result)
     }
 
-    fn wait(&mut self, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
+    fn wait(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
         self.wait_helper(FutexOp::Wait, value, timeout)
     }
 
-    fn lock_pi(&mut self, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
+    fn lock_pi(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
         self.wait_helper(FutexOp::LockPi, value, timeout)
     }
 
-    fn trylock_pi(&mut self, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
+    fn trylock_pi(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32> {
         self.wait_helper(FutexOp::LockPi, value, timeout)
     }
 
-    fn compare_requeue_pi(&mut self, num_wake: WakeNumber, num_requeue: WakeNumber, m: &mut Self, val: u32) -> Result<i32> {
+    fn unlock_pi(&self) -> Result<i32> {
+        let result =
+            unsafe { syscall(SYS_futex, &self.0 as *const AtomicI32, FutexOp::UnlockPi) as i32 };
 
+        errno::Errno::result(result)
+    }
+}
+
+// TODO This could take a timeout but we're ignoring it until we have a time api
+#[inline]
+fn mutex_get(m: &Mutex, signal_failure: bool) -> Result<()> {
+    let tid = gettid();
+
+    loop {
+        // we failed to swap
+        if (m.0).0.compare_and_swap(0, tid, Ordering::SeqCst) == 0 {
+            let result = m.0.lock_pi(1, None);
+            match result {
+                Ok(_) => break,
+                Err(NixError::Sys(errno)) => {
+                    if errno == Errno::EINTR {
+                        if signal_failure {
+                            return Err(NixError::from_errno(Errno::EINTR));
+                        } else {
+                            continue;
+                        }
+                    } else if unlikely(errno == Errno::EDEADLK) {
+                        panic!(
+                            "Somehow attempted to lock {:p} multiple times (blame {})",
+                            m, tid
+                        );
+                    }
+
+                    panic!("FUTEX_LOCK_PI with (futex={:p}({}), value=1, timeout=None) failed due to {}.",
+                           &m.0, (m.0).0.load(Ordering::SeqCst), errno);
+                }
+                _ => panic!("Unexpected error from futex wait (this should never happen)"),
+            }
+        } else {
+            // yay we don't have to use the kernel
+            break;
+        }
+    }
+
+    Ok(())
+}
+
+unsafe impl RawMutex for Mutex {
+    const INIT: Mutex = Mutex(Futex(AtomicI32::new(0)));
+
+    type GuardMarker = lock_api::GuardNoSend;
+
+    fn lock(&self) {
+        mutex_get(self, false).expect(
+            "Failed to grab mutex, this should be impossible since signal_failure is false.",
+        );
+    }
+
+    fn unlock(&self) {
+        let tid = gettid();
+
+        let value = (self.0).0.load(Ordering::SeqCst);
+
+        if value & FUTEX_TID_MASK != tid {
+            // check_cached_tid
+            if value & FUTEX_TID_MASK == 0 {
+                panic!("Multiple unlock of Mutex {:p} by {}", &self, tid);
+            } else {
+                panic!("Mutex {:p} already locked by {} not {}.", &self, value & FUTEX_TID_MASK, tid);
+            }
+        }
+
+        if (self.0).0.compare_and_swap(tid, 0, Ordering::SeqCst) != 0 {
+            let result = (self.0).unlock_pi();
+            let returncode = result.unwrap_or_else(|r| {
+                panic!("FUTEX_UNLOCK_PI with (futex={:p}) failed due to {}.", &self, r);
+            });
+            if returncode != 0 {
+                panic!("FUTEX_UNLOCK_PI with (futex={:p}) failed, unlock result positive and nonzero",
+                        &self);
+            }
+        } else {
+            // no waiters, we don't have to use the kernel!
+        }
+    }
+
+    fn try_lock(&self) -> bool {
+        let value = (self.0).0.compare_and_swap(0, gettid(), Ordering::SeqCst);
+
+        return value != 0;
     }
 }
