@@ -10,22 +10,25 @@ use std::sync::atomic::{AtomicI32, Ordering};
 use std::cell::RefCell;
 use std::thread_local;
 
+#[allow(dead_code)]
 fn likely(a: bool) -> bool {
     a
 }
 
+#[allow(dead_code)]
 fn unlikely(a: bool) -> bool {
     a
 }
 
 const FUTEX_TID_MASK: libc::pid_t = 0x3fffffff;
 
-enum WakeNumber {
+#[allow(dead_code)]
+pub enum WakeNumber {
     N(u32),
     All,
 }
 
-trait RawFutex {
+pub trait RawFutex {
     fn wake(&self, wake: WakeNumber) -> Result<i32>;
     fn wait(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
     fn lock_pi(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
@@ -34,9 +37,9 @@ trait RawFutex {
 }
 
 #[repr(align(4), C)]
-struct Futex(AtomicI32);
+pub struct Futex(AtomicI32);
 
-struct Mutex(Futex);
+pub struct FutexMutex(Futex);
 
 #[repr(i32)]
 #[derive(Debug)]
@@ -63,7 +66,6 @@ thread_local! {
     static TID: RefCell<libc::pid_t> = RefCell::new(0);
 }
 
-#[allow(dead_code)]
 extern "C" fn clear_tid_on_fork() {
     TID.with(|t| *t.borrow_mut() = 0);
 }
@@ -88,7 +90,7 @@ fn gettid() -> libc::pid_t {
     TID.with(|t| t.borrow().clone())
 }
 
-fn gettid_call() -> libc::pid_t {
+fn gettid_impl() -> libc::pid_t {
     let result = unsafe { syscall(SYS_gettid) as libc::pid_t };
 
     errno::Errno::result(result).expect("gettid() failed")
@@ -97,7 +99,7 @@ fn gettid_call() -> libc::pid_t {
 static PTHREAD_ONCE: std::sync::Once = std::sync::Once::new();
 
 fn initialize_per_thread() {
-    TID.with(|t| *t.borrow() == gettid_call());
+    TID.with(|t| *t.borrow() == gettid_impl());
     PTHREAD_ONCE.call_once(|| {
         install_pthread_hook();
     });
@@ -174,52 +176,59 @@ impl RawFutex for Futex {
     }
 }
 
-// TODO This could take a timeout but we're ignoring it until we have a time api
-#[inline]
-fn mutex_get(m: &Mutex, signal_failure: bool) -> Result<()> {
-    let tid = gettid();
 
-    loop {
-        // we failed to swap
-        if (m.0).0.compare_and_swap(0, tid, Ordering::SeqCst) == 0 {
-            let result = m.0.lock_pi(1, None);
-            match result {
-                Ok(_) => break,
-                Err(NixError::Sys(errno)) => {
-                    if errno == Errno::EINTR {
-                        if signal_failure {
-                            return Err(NixError::from_errno(Errno::EINTR));
-                        } else {
-                            continue;
+impl FutexMutex {
+    // TODO This could take a timeout but we're ignoring it until we have a time api
+    #[inline]
+    fn mutex_get(&self, signal_failure: bool) -> Result<()> {
+        let tid = gettid();
+
+        loop {
+            // we failed to swap
+            if (self.0).0.compare_and_swap(0, tid, Ordering::SeqCst) == 0 {
+                let result = self.0.lock_pi(1, None);
+                match result {
+                    Ok(_) => break,
+                    Err(NixError::Sys(errno)) => {
+                        if errno == Errno::EINTR {
+                            if signal_failure {
+                                return Err(NixError::from_errno(Errno::EINTR));
+                            } else {
+                                continue;
+                            }
+                        } else if unlikely(errno == Errno::EDEADLK) {
+                            panic!(
+                                "Somehow attempted to lock {:p} multiple times (blame {})",
+                                &self, tid
+                            );
                         }
-                    } else if unlikely(errno == Errno::EDEADLK) {
-                        panic!(
-                            "Somehow attempted to lock {:p} multiple times (blame {})",
-                            m, tid
-                        );
-                    }
 
-                    panic!("FUTEX_LOCK_PI with (futex={:p}({}), value=1, timeout=None) failed due to {}.",
-                           &m.0, (m.0).0.load(Ordering::SeqCst), errno);
+                        panic!("FUTEX_LOCK_PI with (futex={:p}({}), value=1, timeout=None) failed due to {}.",
+                            &self.0, (self.0).0.load(Ordering::SeqCst), errno);
+                    }
+                    _ => panic!("Unexpected error from futex wait (this should never happen)"),
                 }
-                _ => panic!("Unexpected error from futex wait (this should never happen)"),
+            } else {
+                // yay we don't have to use the kernel
+                break;
             }
-        } else {
-            // yay we don't have to use the kernel
-            break;
         }
+
+        Ok(())
     }
 
-    Ok(())
+    fn islocked(&self) -> bool {
+        return (self.0).0.load(Ordering::Relaxed) & FUTEX_TID_MASK != gettid();
+    }
 }
 
-unsafe impl RawMutex for Mutex {
-    const INIT: Mutex = Mutex(Futex(AtomicI32::new(0)));
+unsafe impl RawMutex for FutexMutex {
+    const INIT: FutexMutex = FutexMutex(Futex(AtomicI32::new(0)));
 
-    type GuardMarker = lock_api::GuardNoSend;
+    type GuardMarker = lock_api::GuardSend;
 
     fn lock(&self) {
-        mutex_get(self, false).expect(
+        self.mutex_get(false).expect(
             "Failed to grab mutex, this should be impossible since signal_failure is false.",
         );
     }
@@ -230,7 +239,9 @@ unsafe impl RawMutex for Mutex {
         let value = (self.0).0.load(Ordering::SeqCst);
 
         if value & FUTEX_TID_MASK != tid {
-            // check_cached_tid
+            if tid != gettid_impl() {
+                panic!("Failed on unlock: task {} forked to make task {} but didn't initialize the sync logic.");
+            }
             if value & FUTEX_TID_MASK == 0 {
                 panic!("Multiple unlock of Mutex {:p} by {}", &self, tid);
             } else {
@@ -258,3 +269,14 @@ unsafe impl RawMutex for Mutex {
         return value != 0;
     }
 }
+
+impl Drop for FutexMutex {
+    fn drop(&mut self) {
+        if unlikely(self.islocked()) {
+            panic!("Trying to drop a locked mutex {:p}", &self)
+        }
+    }
+}
+
+pub type Mutex<T> = lock_api::Mutex<FutexMutex, T>;
+pub type MutexGuard<'a, T> = lock_api::MutexGuard<'a, FutexMutex, T>;
