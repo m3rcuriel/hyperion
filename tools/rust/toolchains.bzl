@@ -17,7 +17,7 @@ def _platform_exec(triple, dylib, staticlib, binary, constraints, compilersha256
 def _target(exec, targets = []):
     return (exec, targets)
 
-RUST_VERSION = "1.40.0"
+RUST_VERSION = "nightly"
 TARGET_DEFS = [
     _target(
         _platform_exec(
@@ -29,8 +29,8 @@ TARGET_DEFS = [
                 "@bazel_tools//platforms:linux",
                 "@bazel_tools//platforms:x86_64",
             ],
-            compilersha256 = "5085a26abdc932fd9339aab2078084f9ab654f8298ad9f301611ac41ba8eca19",
-            librarysha256 = "735affaca1370699f9bc3fd7b1320694afd250923d283d88c842b7913a97d083",
+            compilersha256 = "0d566d06c633e25dd0c972fb8a6bd04247c88b0721e3c41d9a0ff2c688086884",
+            librarysha256 = "8188f14c175957c53b05258372e537f070c67bd18432616c19049c3cd3ca80f0",
         ),
         [
             _platform_target(
@@ -39,7 +39,7 @@ TARGET_DEFS = [
                     "//tools/platforms:none",
                     "//tools/platforms:cortex-m7f",
                 ],
-                sha256 = "1565e307967c72b3628eb4022f70f4237429d08dc16f244eafc6888488d85c2e",
+                sha256 = "7f0dd36ddb9c35aa373b1e6ff883eea527a2232d39d06b7e0b9e667004b596df",
             ),
         ],
     ),
@@ -50,6 +50,7 @@ def rust_toolchains():
         rust_toolchain_repository(
             name = "{}_host".format(execu.target_triple),
             version = RUST_VERSION,
+            iso_date = "2020-02-14",
             dylib_ext = execu.dylib_ext,
             binary_ext = execu.binary_ext,
             staticlib_ext = execu.staticlib_ext,
@@ -62,6 +63,7 @@ def rust_toolchains():
             rust_toolchain_repository(
                 name = "{}_{}".format(execu.target_triple, target.target_triple),
                 version = RUST_VERSION,
+                iso_date = "2020-02-14",
                 dylib_ext = execu.dylib_ext,
                 binary_ext = execu.binary_ext,
                 staticlib_ext = execu.staticlib_ext,
