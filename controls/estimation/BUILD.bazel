@@ -11,8 +11,8 @@ py_library(
     srcs = [
         "__init__.py",
     ],
-    deps = ["//controls:python_init"],
     visibility = ["//visibility:public"],
+    deps = ["//controls:python_init"],
 )
 
 py_library(

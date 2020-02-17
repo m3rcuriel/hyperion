@@ -1,1 +1,4 @@
-exports_files(["memory.x", "link.x"])
+exports_files([
+    "memory.x",
+    "link.x",
+])

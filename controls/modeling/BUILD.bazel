@@ -8,8 +8,8 @@ py_library(
 py_library(
     name = "motors",
     srcs = [
-        "dcmotor.py",
         "common_motors.py",
+        "dcmotor.py",
     ],
     deps = [
         ":python_init",
@@ -26,6 +26,6 @@ py_test(
     main = "dcmotor_test.py",
     deps = [
         ":motors",
-        ":python_init"
+        ":python_init",
     ],
 )
