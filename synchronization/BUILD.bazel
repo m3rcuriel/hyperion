@@ -1,14 +1,14 @@
-load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library", "rust_doc", "rust_doc_test", "rust_test")
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_doc", "rust_doc_test", "rust_library", "rust_test")
 
 rust_library(
     name = "futex",
     srcs = ["futex.rs"],
-    visibility = [ "//visibility:public" ],
+    visibility = ["//visibility:public"],
     deps = [
-        "//utilities:unreachable",
         "//cargo:libc",
-        "//cargo:nix",
         "//cargo:lock_api",
+        "//cargo:nix",
+        "//utilities:unreachable",
     ],
 )
 
@@ -17,12 +17,12 @@ rust_test(
     srcs = ["futex_test.rs"],
     deps = [
         ":futex",
-    ]
+    ],
 )
 
 rust_doc(
     name = "futex_docs",
-    dep = ":futex", 
+    dep = ":futex",
 )
 
 rust_doc_test(
