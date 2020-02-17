@@ -27,6 +27,8 @@ pub enum WakeNumber {
 /// Trait representing the basic primitives used in this library for futexes.
 /// Higher level functionality is implemented on top of this.
 pub trait RawFutex {
+    const INIT: Self;
+
     /// Wakes a `WakeNumber` of tasks waiting on this futex.
     fn wake(&self, wake: WakeNumber) -> Result<i32>;
 
@@ -193,6 +195,8 @@ impl Into<libc::c_int> for WakeNumber {
 }
 
 impl RawFutex for Futex {
+    const INIT: Futex = Futex(AtomicI32::new(0));
+
     fn wake(&self, wake: WakeNumber) -> Result<i32> {
         let wakenumber: libc::c_int = wake.into();
         let result = unsafe {
@@ -318,8 +322,8 @@ impl<T: RawFutex> FutexMutex<T> {
     }
 }
 
-unsafe impl RawMutex for FutexMutex<Futex> {
-    const INIT: FutexMutex<Futex> = FutexMutex(Futex(AtomicI32::new(0)));
+unsafe impl<T: RawFutex> RawMutex for FutexMutex<T> {
+    const INIT: FutexMutex<T> = FutexMutex(T::INIT);
 
     type GuardMarker = lock_api::GuardSend;
 
