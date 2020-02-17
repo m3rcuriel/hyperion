@@ -92,8 +92,6 @@ pub struct FutexMutex<T: RawFutex>(T);
 #[derive(Debug)]
 #[allow(dead_code)]
 enum FutexOp {
-    ClockRealtime = libc::FUTEX_CLOCK_REALTIME,
-    CmdMask = libc::FUTEX_CMD_MASK,
     CmpRequeue = libc::FUTEX_CMP_REQUEUE,
     CmpRequeuePi = libc::FUTEX_CMP_REQUEUE_PI,
     Fd = libc::FUTEX_FD,
@@ -457,12 +455,16 @@ impl FutexCondition {
 pub type Mutex<T> = lock_api::Mutex<FutexMutex<Futex>, T>;
 pub type MutexGuard<'a, T> = lock_api::MutexGuard<'a, FutexMutex<Futex>, T>;
 
+/// Wrapper around lower level synchronization primitives allowing
+/// `std::sync::CondVar`-like usage which can be sent through shared
+/// memory and work across multiple properties.
 pub struct CondVar<T> {
     condition: FutexCondition,
     mutex: Mutex<T>,
 }
 
 impl<T> CondVar<T> {
+    /// Returns a new condition variable that works with the mutex passed in.
     pub fn new(mutex: Mutex<T>) -> CondVar<T> {
         CondVar {
             condition: FutexCondition(Futex(AtomicI32::new(0))),
@@ -470,6 +472,11 @@ impl<T> CondVar<T> {
         }
     }
 
+    /// Wake up one task waiting on this condition variable.
+    ///
+    /// Returns `true` if a thread was woken up.
+    ///
+    /// To wake up all threads see `notify_all`.
     pub fn notify_one(&self) -> bool {
         let woken = unsafe { self.condition.wake(self.mutex.raw(), WakeNumber::N(1)) };
 
@@ -482,16 +489,26 @@ impl<T> CondVar<T> {
         }
     }
 
-    pub fn notify_all(&self) -> i32 {
-        unsafe { self.condition.wake(self.mutex.raw(), WakeNumber::All) }
+    /// Wakes up all tasks waiting on this condition variable.
+    ///
+    /// Returns the number of threads it woke up.
+    ///
+    /// To wake up only one thread, see `notify_one`.
+    pub fn notify_all(&self) -> usize {
+        unsafe { self.condition.wake(self.mutex.raw(), WakeNumber::All) as usize }
     }
 
+    /// Blocks the current task until the condition variable is notified.
+    ///
+    /// Unlocks the mutex passed in to the condition variable, and then sleeps.
+    /// When this function returns, the lock has been reacquired.
     pub fn wait(&self) {
         unsafe {
             self.condition.wait(self.mutex.raw());
         }
     }
 
+    /// Returns the mutex that should be locked to use this condition variable.
     pub fn mutex(&self) -> &Mutex<T> {
         return &self.mutex;
     }
