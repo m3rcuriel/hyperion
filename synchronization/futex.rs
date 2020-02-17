@@ -395,8 +395,13 @@ unsafe impl RawMutex for FutexMutex<Futex> {
 
 impl<T: RawFutex> Drop for FutexMutex<T> {
     fn drop(&mut self) {
-        if unlikely(self.islocked()) {
-            panic!("Trying to drop a locked mutex {:p}", &self)
+        if unlikely(std::thread::panicking()) {
+            // if we're already panicking I guess we don't need to panic again
+            // TODO make this log an error instead
+
+            if unlikely(self.islocked()) {
+                panic!("Trying to drop a locked mutex {:p}", &self)
+            }
         }
     }
 }
