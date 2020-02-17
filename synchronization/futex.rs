@@ -153,7 +153,7 @@ static PTHREAD_ONCE: std::sync::Once = std::sync::Once::new();
 ///
 /// The hook should only be installed once per process.
 fn initialize_per_thread() {
-    TID.with(|t| *t.borrow() == gettid_impl());
+    TID.with(|t| *t.borrow_mut() = gettid_impl());
     PTHREAD_ONCE.call_once(|| {
         install_pthread_hook();
     });
@@ -315,7 +315,7 @@ impl<T: RawFutex> FutexMutex<T> {
 
     /// Check if this mutex is currently locked using only the fastpath.
     fn islocked(&self) -> bool {
-        return self.0.load(Ordering::Relaxed) & FUTEX_TID_MASK != gettid();
+        return self.0.load(Ordering::Relaxed) & FUTEX_TID_MASK == gettid();
     }
 }
 
@@ -358,7 +358,7 @@ unsafe impl RawMutex for FutexMutex<Futex> {
 
         // if we get here, the futex is locked by us right now
 
-        if (self.0).compare_and_swap(tid, 0, Ordering::SeqCst) != 0 {
+        if (self.0).compare_and_swap(tid, 0, Ordering::SeqCst) != tid {
             // if this transaction fails, people were waiting on this futex (the value is nonzero)
             // we have to let the kernel handle the unlock
             let result = (self.0).unlock_pi();
@@ -396,17 +396,17 @@ impl<T: RawFutex> Drop for FutexMutex<T> {
 pub struct FutexCondition(Futex);
 
 impl FutexCondition {
-    fn inner_lock(&self, mutex: &FutexMutex<Futex>) -> Result<()> {
+    fn inner_lock(&self, mutex: &FutexMutex<Futex>) {
             let mutex_result = mutex.mutex_get(false);
-            if likely(mutex_result == MutexLockResult::Ok) {
+            if mutex_result == MutexLockResult::Ok {
                 // successfully locked
-                return Ok(());
+                return;
             } else {
                 panic!("Did not expect an error while locking a condition variable mutex");
             }
     }
 
-    pub fn wait(&self, mutex: &FutexMutex<Futex>) -> Result<()> {
+    pub fn wait(&self, mutex: &FutexMutex<Futex>) {
         let start = self.0.load(Ordering::SeqCst);
 
         mutex.unlock();
@@ -437,12 +437,51 @@ impl FutexCondition {
         }
     }
 
-    pub fn wake(&self, _mutex: &FutexMutex<Futex>) {
+    pub fn wake(&self, _mutex: &FutexMutex<Futex>, number: WakeNumber) -> i32 {
         self.0.fetch_add(1, Ordering::SeqCst);
 
-        let _ret = self.0.wake(WakeNumber::All);
+        self.0.wake(number).expect("Failed to wake CV")
     }
 }
 
 pub type Mutex<T> = lock_api::Mutex<FutexMutex<Futex>, T>;
 pub type MutexGuard<'a, T> = lock_api::MutexGuard<'a, FutexMutex<Futex>, T>;
+
+pub struct CondVar<T> {
+    condition: FutexCondition,
+    mutex: Mutex<T>,
+}
+
+impl<T> CondVar<T> {
+    pub fn new(mutex: Mutex<T>) -> CondVar<T> {
+       CondVar{condition: FutexCondition(Futex(AtomicI32::new(0))), mutex}
+    }
+
+    pub fn notify_one(&self) -> bool {
+        let woken = unsafe {self.condition.wake(self.mutex.raw(), WakeNumber::N(1)) };
+
+        if woken == 1 {
+            true
+        } else if woken == 0 {
+            false
+        } else {
+           panic!("Woke more than one waiter in notify_one");
+        }
+    }
+
+    pub fn notify_all(&self) -> i32 {
+        unsafe {
+            self.condition.wake(self.mutex.raw(), WakeNumber::All)
+        }
+    }
+
+    pub fn wait(&self) {
+        unsafe {
+            self.condition.wait(self.mutex.raw());
+        }
+    }
+
+    pub fn mutex(&self) -> &Mutex<T> {
+        return &self.mutex;
+    }
+}
