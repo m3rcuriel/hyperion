@@ -3,6 +3,7 @@ load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library", "rust_doc", "rust_do
 rust_library(
     name = "futex",
     srcs = ["futex.rs"],
+    visibility = [ "//visibility:public" ],
     deps = [
         "//utilities:unreachable",
         "//cargo:libc",
