@@ -12,6 +12,7 @@ use std::sync::atomic::{AtomicI32, Ordering};
 use std::cell::RefCell;
 use std::thread_local;
 use std::intrinsics::{likely, unlikely};
+use unreachable::unreachable;
 
 const FUTEX_TID_MASK: libc::pid_t = 0x3fffffff;
 
@@ -54,6 +55,10 @@ pub trait RawFutex {
     /// User-space atomic operation allowing a load operation on the user-space atomic
     /// data in the futex.
     fn load(&self, ordering: Ordering) -> i32;
+
+    /// User-space atomic operation allowing a fetch add operation on the user-space atomic
+    /// data in the futex.
+    fn fetch_add(&self, val: i32, ordering: Ordering) -> i32;
 }
 
 /// The base Futex type. It literally has to be a 4-byte aligned integer-width piece of
@@ -233,8 +238,14 @@ impl RawFutex for Futex {
     fn compare_and_swap(&self, current_value: i32, new_value: i32, ordering: Ordering) -> i32 {
         self.0.compare_and_swap(current_value, new_value, ordering)
     }
+
+    #[inline]
+    fn fetch_add(&self, val: i32, ordering: Ordering) -> i32{
+        self.0.fetch_add(val, ordering)
+    }
 }
 
+#[derive(PartialEq)]
 pub enum MutexLockResult {
     SignalFailure,
     Timeout,
@@ -291,7 +302,7 @@ impl<T: RawFutex> FutexMutex<T> {
                             futex, futex.load(Ordering::SeqCst), errno);
                     },
                     // I hope to god this last one is impossible
-                    _ => panic!("Unexpected error from futex wait (this should never happen)"),
+                    _ => unreachable!("Unexpected error from futex wait (this should never happen)"),
                 }
             } else {
                 // yay we don't have to use the kernel
@@ -318,7 +329,7 @@ unsafe impl RawMutex for FutexMutex<Futex> {
         match result {
             MutexLockResult::Ok => {},
             _ => {
-            panic!("Failed to grab mutex, this should be impossible since signal_failure is false and no timeout.");
+                panic!("Failed to grab mutex, this should be impossible since signal_failure is false and no timeout.");
             },
 
         }
@@ -379,6 +390,57 @@ impl<T: RawFutex> Drop for FutexMutex<T> {
         if unlikely(self.islocked()) {
             panic!("Trying to drop a locked mutex {:p}", &self)
         }
+    }
+}
+
+pub struct FutexCondition(Futex);
+
+impl FutexCondition {
+    fn inner_lock(&self, mutex: &FutexMutex<Futex>) -> Result<()> {
+            let mutex_result = mutex.mutex_get(false);
+            if likely(mutex_result == MutexLockResult::Ok) {
+                // successfully locked
+                return Ok(());
+            } else {
+                panic!("Did not expect an error while locking a condition variable mutex");
+            }
+    }
+
+    pub fn wait(&self, mutex: &FutexMutex<Futex>) -> Result<()> {
+        let start = self.0.load(Ordering::SeqCst);
+
+        mutex.unlock();
+
+        loop {
+           let ret = self.0.wait(start, None);
+
+            match ret {
+                Ok(_) => {
+                    // we need to grab the lock.
+                    return self.inner_lock(mutex);
+                }
+                Err(NixError::Sys(errno)) => {
+                    if unlikely(errno == Errno::EAGAIN) {
+                        return self.inner_lock(mutex);
+                    }
+
+                    if unlikely(errno == Errno::EINTR) {
+                        continue;
+                    }
+
+                    panic!("Unexpected failure while waiting on futex: FUTEX_WAIT({:p}, {}, None) failed due to {}", &self, start, errno);
+                }
+                _ => {
+                    unreachable!("Should never get this error");
+                }
+            }
+        }
+    }
+
+    pub fn wake(&self, _mutex: &FutexMutex<Futex>) {
+        self.0.fetch_add(1, Ordering::SeqCst);
+
+        let _ret = self.0.wake(WakeNumber::All);
     }
 }
 
