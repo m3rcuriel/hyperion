@@ -1,4 +1,4 @@
-package(default_visibility = ["@raze__backtrace__0_3_42//:__subpackages__"])
+package(default_visibility = ["@raze__backtrace__0_3_44//:__subpackages__"])
 
 licenses([
     "notice",  # "MIT,Apache-2.0"

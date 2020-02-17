@@ -3,70 +3,57 @@ cargo-raze workspace build file.
 
 DO NOT EDIT! Replaced on runs of cargo-raze
 """
-
 package(default_visibility = ["//visibility:public"])
 
 licenses([
-    "notice",  # See individual crates for specific licenses
+  "notice" # See individual crates for specific licenses
 ])
-
 alias(
     name = "as_slice",
     actual = "@raze__as_slice__0_1_0//:as_slice",
 )
-
 alias(
     name = "bare_metal",
     actual = "@raze__bare_metal__0_2_5//:bare_metal",
 )
-
 alias(
     name = "cortex_m",
     actual = "@raze__cortex_m__0_6_2//:cortex_m",
 )
-
 alias(
     name = "flatbuffers",
     actual = "@raze__flatbuffers__0_6_0//:flatbuffers",
 )
-
 alias(
     name = "libc",
     actual = "@raze__libc__0_2_66//:libc",
 )
-
 alias(
     name = "nalgebra",
     actual = "@raze__nalgebra__0_18_1//:nalgebra",
 )
-
 alias(
     name = "proc_macro2",
     actual = "@raze__proc_macro2__1_0_8//:proc_macro2",
 )
-
 alias(
     name = "svd2rust",
     actual = "@raze__svd2rust__0_17_0//:svd2rust",
 )
-
 alias(
     # Extra aliased target, from raze configuration
     # N.B.: The exact form of this is subject to change.
     name = "cargo_bin_svd2rust",
     actual = "@raze__svd2rust__0_17_0//:cargo_bin_svd2rust",
 )
-
 alias(
     name = "typenum",
     actual = "@raze__typenum__1_10_0//:typenum",
 )
-
 alias(
     name = "vcell",
     actual = "@raze__vcell__0_1_2//:vcell",
 )
-
 sh_binary(
     name = "regenerate",
     srcs = [":regenerate.sh"],
