@@ -582,12 +582,12 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__scopeguard__1_0_0",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/scopeguard/scopeguard-1.0.0.crate",
+        name = "raze__scopeguard__1_1_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/scopeguard/scopeguard-1.1.0.crate",
         type = "tar.gz",
-        sha256 = "b42e15e59b18a828bbf5c58ea01debb36b9b096346de35d941dcb89009f24a0d",
-        strip_prefix = "scopeguard-1.0.0",
-        build_file = Label("//cargo/remote:scopeguard-1.0.0.BUILD.bazel")
+        sha256 = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd",
+        strip_prefix = "scopeguard-1.1.0",
+        build_file = Label("//cargo/remote:scopeguard-1.1.0.BUILD.bazel")
     )
 
     _new_http_archive(
