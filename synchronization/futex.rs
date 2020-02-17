@@ -10,8 +10,8 @@ use lock_api::RawMutex;
 use std::sync::atomic::{AtomicI32, Ordering};
 
 use std::cell::RefCell;
-use std::thread_local;
 use std::intrinsics::{likely, unlikely};
+use std::thread_local;
 use unreachable::unreachable;
 
 const FUTEX_TID_MASK: libc::pid_t = 0x3fffffff;
@@ -38,7 +38,6 @@ pub trait RawFutex {
     /// futex is nonzero, and if so sets the `FUTEX_WAITERS` bit, and then attaches the waiter
     /// futex. The waiting occurs in priority order.
     fn lock_pi(&self, value: i32, timeout: Option<time::Duration>) -> Result<i32>;
-
 
     /// Attempts to acquire the lock. This is more robust than simply checking the atomic because
     /// the kernel might be able to acquire the lock in cases where the user code lacks the necessary
@@ -230,7 +229,7 @@ impl RawFutex for Futex {
     }
 
     #[inline]
-    fn load(&self, ordering: Ordering) -> i32{
+    fn load(&self, ordering: Ordering) -> i32 {
         self.0.load(ordering)
     }
 
@@ -240,7 +239,7 @@ impl RawFutex for Futex {
     }
 
     #[inline]
-    fn fetch_add(&self, val: i32, ordering: Ordering) -> i32{
+    fn fetch_add(&self, val: i32, ordering: Ordering) -> i32 {
         self.0.fetch_add(val, ordering)
     }
 }
@@ -300,9 +299,11 @@ impl<T: RawFutex> FutexMutex<T> {
                         // if we have no idea why we failed, tell the user that
                         panic!("FUTEX_LOCK_PI with (futex={:p}({}), value=1, timeout=None) failed due to {}.",
                             futex, futex.load(Ordering::SeqCst), errno);
-                    },
+                    }
                     // I hope to god this last one is impossible
-                    _ => unreachable!("Unexpected error from futex wait (this should never happen)"),
+                    _ => {
+                        unreachable!("Unexpected error from futex wait (this should never happen)")
+                    }
                 }
             } else {
                 // yay we don't have to use the kernel
@@ -327,11 +328,10 @@ unsafe impl RawMutex for FutexMutex<Futex> {
     fn lock(&self) {
         let result = self.mutex_get(false);
         match result {
-            MutexLockResult::Ok => {},
+            MutexLockResult::Ok => {}
             _ => {
                 panic!("Failed to grab mutex, this should be impossible since signal_failure is false and no timeout.");
-            },
-
+            }
         }
     }
 
@@ -352,7 +352,12 @@ unsafe impl RawMutex for FutexMutex<Futex> {
                 panic!("Multiple unlock of Mutex {:p} by {}", &self, tid);
             } else {
                 // this mutex is locked but not by us and we didn't fork
-                panic!("Mutex {:p} already locked by {} not {}.", &self, value & FUTEX_TID_MASK, tid);
+                panic!(
+                    "Mutex {:p} already locked by {} not {}.",
+                    &self,
+                    value & FUTEX_TID_MASK,
+                    tid
+                );
             }
         }
 
@@ -364,12 +369,17 @@ unsafe impl RawMutex for FutexMutex<Futex> {
             let result = (self.0).unlock_pi();
             let returncode = result.unwrap_or_else(|r| {
                 // we failed to unlock
-                panic!("FUTEX_UNLOCK_PI with (futex={:p}) failed due to {}.", &self, r);
+                panic!(
+                    "FUTEX_UNLOCK_PI with (futex={:p}) failed due to {}.",
+                    &self, r
+                );
             });
             if returncode != 0 {
                 // we failed to unlock
-                panic!("FUTEX_UNLOCK_PI with (futex={:p}) failed, unlock result positive and nonzero",
-                        &self);
+                panic!(
+                    "FUTEX_UNLOCK_PI with (futex={:p}) failed, unlock result positive and nonzero",
+                    &self
+                );
             }
         } else {
             // no waiters, we don't have to use the kernel!
@@ -397,13 +407,13 @@ pub struct FutexCondition(Futex);
 
 impl FutexCondition {
     fn inner_lock(&self, mutex: &FutexMutex<Futex>) {
-            let mutex_result = mutex.mutex_get(false);
-            if mutex_result == MutexLockResult::Ok {
-                // successfully locked
-                return;
-            } else {
-                panic!("Did not expect an error while locking a condition variable mutex");
-            }
+        let mutex_result = mutex.mutex_get(false);
+        if mutex_result == MutexLockResult::Ok {
+            // successfully locked
+            return;
+        } else {
+            panic!("Did not expect an error while locking a condition variable mutex");
+        }
     }
 
     pub fn wait(&self, mutex: &FutexMutex<Futex>) {
@@ -412,7 +422,7 @@ impl FutexCondition {
         mutex.unlock();
 
         loop {
-           let ret = self.0.wait(start, None);
+            let ret = self.0.wait(start, None);
 
             match ret {
                 Ok(_) => {
@@ -454,25 +464,26 @@ pub struct CondVar<T> {
 
 impl<T> CondVar<T> {
     pub fn new(mutex: Mutex<T>) -> CondVar<T> {
-       CondVar{condition: FutexCondition(Futex(AtomicI32::new(0))), mutex}
+        CondVar {
+            condition: FutexCondition(Futex(AtomicI32::new(0))),
+            mutex,
+        }
     }
 
     pub fn notify_one(&self) -> bool {
-        let woken = unsafe {self.condition.wake(self.mutex.raw(), WakeNumber::N(1)) };
+        let woken = unsafe { self.condition.wake(self.mutex.raw(), WakeNumber::N(1)) };
 
         if woken == 1 {
             true
         } else if woken == 0 {
             false
         } else {
-           panic!("Woke more than one waiter in notify_one");
+            panic!("Woke more than one waiter in notify_one");
         }
     }
 
     pub fn notify_all(&self) -> i32 {
-        unsafe {
-            self.condition.wake(self.mutex.raw(), WakeNumber::All)
-        }
+        unsafe { self.condition.wake(self.mutex.raw(), WakeNumber::All) }
     }
 
     pub fn wait(&self) {
