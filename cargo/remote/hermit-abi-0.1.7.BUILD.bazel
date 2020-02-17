@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "restricted", # "MIT OR Apache-2.0"
+  "notice", # "MIT,Apache-2.0"
 ])
 
 load(
@@ -23,27 +23,22 @@ load(
 )
 
 
-# Unsupported target "bad_svd" with type "test" omitted
 
 rust_library(
-    name = "svd_parser",
+    name = "hermit_abi",
     crate_root = "src/lib.rs",
     crate_type = "lib",
-    edition = "2018",
+    edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__anyhow__1_0_26//:anyhow",
-        "@raze__either__1_5_3//:either",
-        "@raze__thiserror__1_0_11//:thiserror",
-        "@raze__xmltree__0_8_0//:xmltree",
+        "@raze__libc__0_2_66//:libc",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.9.0",
+    version = "0.1.7",
     crate_features = [
-        "derive-from",
+        "default",
     ],
 )
 
-# Unsupported target "svd2json" with type "example" omitted

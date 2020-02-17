@@ -23,27 +23,29 @@ load(
 )
 
 
-# Unsupported target "bad_svd" with type "test" omitted
+# Unsupported target "compiletest" with type "test" omitted
+# Unsupported target "test_display" with type "test" omitted
+# Unsupported target "test_error" with type "test" omitted
+# Unsupported target "test_from" with type "test" omitted
+# Unsupported target "test_option" with type "test" omitted
+# Unsupported target "test_path" with type "test" omitted
+# Unsupported target "test_source" with type "test" omitted
+# Unsupported target "test_transparent" with type "test" omitted
 
 rust_library(
-    name = "svd_parser",
+    name = "thiserror",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__anyhow__1_0_26//:anyhow",
-        "@raze__either__1_5_3//:either",
-        "@raze__thiserror__1_0_11//:thiserror",
-        "@raze__xmltree__0_8_0//:xmltree",
+        "@raze__thiserror_impl__1_0_11//:thiserror_impl",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.9.0",
+    version = "1.0.11",
     crate_features = [
-        "derive-from",
     ],
 )
 
-# Unsupported target "svd2json" with type "example" omitted
