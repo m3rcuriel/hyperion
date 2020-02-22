@@ -11,6 +11,7 @@ py_library(
         "common_motors.py",
         "dcmotor.py",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":python_init",
         "//controls:util",
