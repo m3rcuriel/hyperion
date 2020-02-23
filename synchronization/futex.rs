@@ -399,7 +399,7 @@ unsafe impl<T: RawFutex> RawMutex for FutexMutex<T> {
 
 impl<T: RawFutex> Drop for FutexMutex<T> {
     fn drop(&mut self) {
-        if unlikely(std::thread::panicking()) {
+        if likely(!std::thread::panicking()) {
             // if we're already panicking I guess we don't need to panic again
             // TODO make this log an error instead
 
