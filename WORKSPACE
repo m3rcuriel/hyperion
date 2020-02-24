@@ -67,6 +67,14 @@ http_archive(
     urls = [HYPERION_URL + "FRC-2020-Linux-Toolchain-7.3.0.tar.gz"],
 )
 
+new_http_archive(
+    name = "allwpilib_ni_libraries_repo",
+    build_file = "@//third_party:ni-libraries.BUILD",
+    sha256 = "821687afbee2d7531fb3e47d8d58ac10005695e59685be3ac3aa00b3179faf52",
+    url = "http://frc971.org/Build-Dependencies/allwpilib_ni-libraries_20749ed.tar.gz",
+    strip_prefix = "ni-libraries",
+)
+
 load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")
 
 register_cpp_toolchains()
