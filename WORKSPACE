@@ -59,6 +59,14 @@ http_archive(
     urls = [HYPERION_URL + "gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2"],
 )
 
+http_archive(
+    name = "linux_arm_frc_linux_gnueabi_repo",
+    build_file = "@//tools/cpp:arm_frc_linux_gnueabi.BUILD",
+    sha256 = "043a5b047c2af9cf80d146d8327b588264c98a01e0f3f41e3564dd2bbbc95c0e",
+    strip_prefix = "frc2020/roborio/",
+    urls = [HYPERION_URL + "FRC-2020-Linux-Toolchain-7.3.0.tar.gz"],
+)
+
 load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")
 
 register_cpp_toolchains()

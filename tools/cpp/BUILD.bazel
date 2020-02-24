@@ -1,5 +1,6 @@
 load(":x86_64_linux_gnueabihf_ubuntu_config.bzl", x86_64_configure = "cc_toolchain_config")
 load(":arm_none_eabi_gcc_config.bzl", arm_configure = "cc_toolchain_config")
+load(":arm_frc_linux_gnueabi.bzl", roborio_configure = "cc_toolchain_config")
 
 package(default_visibility = ["//tools/cpp:__pkg__"])
 
@@ -26,6 +27,10 @@ x86_64_configure(
 x86_64_configure(
     name = "x86_64_toolchain_disco_config",
     distro = "disco",
+)
+
+roborio_configure(
+    name = "linux_roborio_toolchain_config",
 )
 
 filegroup(
@@ -236,5 +241,68 @@ toolchain(
         "//tools/platforms:none",
     ],
     toolchain = ":cc-compiler-cortex-m7f",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+filegroup(
+    name = "linux_roborio_all_files",
+    srcs = [
+        "//tools/cpp/arm_frc_linux_gnueabi:tool-wrappers",
+        "//tools/cpp/arm_frc_linux_gnueabi:as",
+        "//tools/cpp/arm_frc_linux_gnueabi:ar",
+        "//tools/cpp/arm_frc_linux_gnueabi:gcc",
+        "//tools/cpp/arm_frc_linux_gnueabi:libs",
+        "@linux_arm_frc_linux_gnueabi_repo//:compiler_pieces",
+    ],
+)
+
+filegroup(
+    name = "linux_roborio_linker_files",
+    srcs = [
+        "//tools/cpp/arm_frc_linux_gnueabi:ld",
+        "//tools/cpp/arm_frc_linux_gnueabi:ar",
+        "//tools/cpp/arm_frc_linux_gnueabi:gcc",
+        "//tools/cpp/arm_frc_linux_gnueabi:libs",
+        "@linux_arm_frc_linux_gnueabi_repo//:compiler_pieces",
+    ],
+)
+
+filegroup(
+    name = "linux_roborio_compiler_files",
+    srcs = [
+        "//tools/cpp/arm_frc_linux_gnueabi:gcc",
+        "//tools/cpp/arm_frc_linux_gnueabi:ld",
+        "@linux_arm_frc_linux_gnueabi_repo//:compiler_components",
+        "@linux_arm_frc_linux_gnueabi_repo//:compiler_pieces",
+    ],
+)
+
+cc_toolchain(
+    name = "cc-compiler-linux-roborio",
+    all_files = ":linux_roborio_all_files",
+    compiler_files = ":linux_roborio_compiler_files",
+    dwp_files = ":empty",
+    dynamic_runtime_lib = ":empty",
+    linker_files = ":linux_roborio_linker_files",
+    objcopy_files = "//tools/cpp/arm_frc_linux_gnueabi:objcopy",
+    static_runtime_lib = ":empty",
+    toolchain_config = ":linux_roborio_toolchain_config",
+    toolchain_identifier = "roborio",
+    strip_files = "//tools/cpp/arm_frc_linux_gnueabi:strip",
+    supports_param_files = 1,
+    visibility = ["//visibility:public"],
+)
+
+toolchain(
+    name = "cc-compiler-linux-roborio-toolchain",
+    exec_compatible_with = [
+        "@bazel_tools//platforms:linux",
+        "@bazel_tools//platforms:x86_64",
+    ],
+    target_compatible_with = [
+        "@bazel_tools//platforms:linux",
+        "//tools/platforms:roborio",
+    ],
+    toolchain = ":cc-compiler-linux-roborio",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
