@@ -1,0 +1,16 @@
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library", "rust_test")
+
+rust_library(
+    name = "custom_panic",
+    srcs = ["filedump_panic.rs"],
+    visibility = ["//visibility:public"],
+    deps = [
+      "//cargo:nix",
+      "//cargo:backtrace",
+    ],
+)
+
+rust_test(
+    name = "custom_panic_test",
+    crate = ":custom_panic",
+)
