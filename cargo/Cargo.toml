@@ -17,6 +17,8 @@ cortex-m = "0.6"
 as-slice = "=0.1.0"
 bare-metal = "0.2.5"
 vcell = "0.1.2"
+backtrace = "0.3.44"
+nix = "0.17.0"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.
@@ -54,7 +56,10 @@ extra_aliased_targets = [
 [raze.crates.libc.'0.2.67']
 additional_flags = [
    "--cfg=libc_core_cvoid",
-   "--cfg=libc_priv_mod_use"
+   "--cfg=libc_priv_mod_use",
+   "--cfg=libc_align",
+   "--cfg=libc_const_size_of",
+   "--cfg=libc_packedN",
 ]
 
 [raze.crates.proc-macro2.'1.0.9']
