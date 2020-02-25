@@ -32,7 +32,7 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__memchr__2_3_2//:memchr",
+        "@raze__memchr__2_3_3//:memchr",
     ],
     rustc_flags = [
         "--cap-lints=allow",
@@ -40,7 +40,6 @@ rust_library(
     version = "0.7.8",
     crate_features = [
         "default",
-        "memchr",
         "std",
     ],
 )

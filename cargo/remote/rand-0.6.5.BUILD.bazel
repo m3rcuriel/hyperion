@@ -37,7 +37,7 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__libc__0_2_66//:libc",
+        "@raze__libc__0_2_67//:libc",
         "@raze__rand_chacha__0_1_1//:rand_chacha",
         "@raze__rand_core__0_4_2//:rand_core",
         "@raze__rand_hc__0_1_0//:rand_hc",
@@ -53,8 +53,6 @@ rust_library(
     version = "0.6.5",
     crate_features = [
         "alloc",
-        "rand_core",
-        "rand_jitter",
         "rand_os",
         "std",
     ],

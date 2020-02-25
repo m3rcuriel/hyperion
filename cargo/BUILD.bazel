@@ -26,7 +26,7 @@ alias(
 )
 alias(
     name = "libc",
-    actual = "@raze__libc__0_2_66//:libc",
+    actual = "@raze__libc__0_2_67//:libc",
 )
 alias(
     name = "nalgebra",
@@ -34,7 +34,7 @@ alias(
 )
 alias(
     name = "proc_macro2",
-    actual = "@raze__proc_macro2__1_0_8//:proc_macro2",
+    actual = "@raze__proc_macro2__1_0_9//:proc_macro2",
 )
 alias(
     name = "svd2rust",

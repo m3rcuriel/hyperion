@@ -53,10 +53,8 @@ rust_library(
     ],
     version = "0.18.1",
     crate_features = [
-        "alga",
         "default",
         "matrixmultiply",
-        "rand",
         "std",
     ],
 )

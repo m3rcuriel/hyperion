@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # "MIT,Apache-2.0"
+  "restricted", # "MIT OR Apache-2.0"
 ])
 
 load(
@@ -23,23 +23,26 @@ load(
 )
 
 
-# Unsupported target "mod" with type "test" omitted
+# Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "const_fn" with type "test" omitted
 
 rust_library(
-    name = "rand_os",
+    name = "libc",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__libc__0_2_67//:libc",
-        "@raze__rand_core__0_4_2//:rand_core",
     ],
     rustc_flags = [
         "--cap-lints=allow",
+        "--cfg=libc_core_cvoid",
+        "--cfg=libc_priv_mod_use",
     ],
-    version = "0.1.3",
+    version = "0.2.67",
     crate_features = [
+        "default",
+        "std",
     ],
 )
 

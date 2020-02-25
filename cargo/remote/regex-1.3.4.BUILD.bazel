@@ -41,7 +41,7 @@ rust_library(
     srcs = glob(["**/*.rs"]),
     deps = [
         "@raze__aho_corasick__0_7_8//:aho_corasick",
-        "@raze__memchr__2_3_2//:memchr",
+        "@raze__memchr__2_3_3//:memchr",
         "@raze__regex_syntax__0_6_14//:regex_syntax",
         "@raze__thread_local__1_0_1//:thread_local",
     ],
@@ -58,7 +58,6 @@ rust_library(
         "perf-dfa",
         "perf-inline",
         "perf-literal",
-        "regex-syntax",
         "std",
         "thread_local",
         "unicode",
