@@ -38,6 +38,7 @@ rust_library(
     ],
     rustc_flags = [
         "--cap-lints=allow",
+        "--cfg=use_proc_macro",
     ],
     version = "1.0.9",
     crate_features = [
