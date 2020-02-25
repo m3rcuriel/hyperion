@@ -1,0 +1,5 @@
+#!/bin/bash --norc
+
+exec -a arm-frc2020-linux-gnueabi-gcov \
+	"${BAZEL_OUTPUT_ROOT}external/linux_arm_frc_linux_gnueabi_repo/bin/arm-frc2020-linux-gnueabi-gcov" \
+	"$@"
