@@ -44,7 +44,7 @@ mod tests {
   use super::*;
 
   #[test]
-  #[should_panic]
+  #[should_panic(expected = "1 panic")]
   fn test_panic_works() {
     register_panic();
     panic!("{} panic", 1);
