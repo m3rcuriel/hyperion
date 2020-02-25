@@ -10,7 +10,7 @@ path = "fake_lib.rs"
 nalgebra = "~0.18.0"
 flatbuffers = {git = "https://github.com/m3rcuriel/flatbuffers", branch = "fixedvec"}
 svd2rust = {git =  "https://github.com/rust-embedded/svd2rust" }
-libc = {version = "0.2.60", features = [ "extra_traits", "align" ]}
+libc = "0.2.66"
 proc-macro2 = "1.0.8"
 typenum = "~1.10.0"
 cortex-m = "0.6"
