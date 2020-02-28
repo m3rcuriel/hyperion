@@ -280,6 +280,7 @@ filegroup(
 cc_toolchain(
     name = "cc-compiler-linux-roborio",
     all_files = ":linux_roborio_all_files",
+    ar_files = "//tools/cpp/arm_frc_linux_gnueabi:ar",
     compiler_files = ":linux_roborio_compiler_files",
     dwp_files = ":empty",
     dynamic_runtime_lib = ":empty",

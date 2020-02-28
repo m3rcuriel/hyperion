@@ -1,6 +1,7 @@
 workspace(name = "hyperion")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 
 HYPERION_URL = "http://hyperion-project.s3-us-west-2.amazonaws.com/"
 
@@ -67,12 +68,21 @@ http_archive(
     urls = [HYPERION_URL + "FRC-2020-Linux-Toolchain-7.3.0.tar.gz"],
 )
 
-new_http_archive(
+http_archive(
     name = "allwpilib_ni_libraries_repo",
     build_file = "@//third_party:ni-libraries.BUILD",
-    sha256 = "821687afbee2d7531fb3e47d8d58ac10005695e59685be3ac3aa00b3179faf52",
-    url = "http://frc971.org/Build-Dependencies/allwpilib_ni-libraries_20749ed.tar.gz",
-    strip_prefix = "ni-libraries",
+    sha256 = "59e971854d689b8e60d2b7ede3cc1da911dbc70deeccb9b5306bb7c7aa5102d9",
+    url = "http://frc971.org/Build-Dependencies/allwpilib_ni-libraries_c826046.tar.gz",
+)
+
+http_archive(
+    name = "allwpilib",
+    build_file = "@//third_party:wpilib.BUILD",
+    patch_args = ["-p1"],
+    patches = ["//third_party:wpilib_auto_spi.patch"],
+    strip_prefix = "allwpilib-2020.3.2",
+    sha256 = "9df94fd4c3f3a76201619cdb4010fdb923b6ed28a235dde3bf98e36539464f40",
+    urls = ["https://github.com/wpilibsuite/allwpilib/archive/v2020.3.2.tar.gz"],
 )
 
 load("//tools/cpp:register.bzl", register_cpp_toolchains = "register_toolchains")
