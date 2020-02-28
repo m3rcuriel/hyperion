@@ -45,6 +45,7 @@ cc_library(
         ":touch_config_header",
     ],
     copts = [
+        "-Wno-unused-but-set-variable",
         "-fvisibility=hidden",
         "-fPIC",
     ],
