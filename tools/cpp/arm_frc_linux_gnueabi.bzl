@@ -147,7 +147,7 @@ def _impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = [
-                            "-std=gnu++1y",
+                            "-std=c++17",
                             "-isystem",
                             "external/linux_arm_frc_linux_gnueabi_repo/arm-frc2020-linux-gnueabi/usr/include/c++/7.3.0",
                             "-isystem",
@@ -194,6 +194,7 @@ def _impl(ctx):
                             "-Werror",
                             "-Wunused-local-typedefs",
                             "-Wno-cast-align",
+                            "-Wno-psabi",
                             "-fno-omit-frame-pointer",
                             "-D__has_feature(x)=0",
                             "-pipe",

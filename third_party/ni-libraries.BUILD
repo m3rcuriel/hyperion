@@ -18,6 +18,5 @@ cc_library(
     ],
     linkopts = ["-ldl"],
     linkstatic = True,
-    restricted_to = ["@//tools:roborio"],
     visibility = ["//visibility:public"],
 )
