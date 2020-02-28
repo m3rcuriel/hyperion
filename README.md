@@ -12,7 +12,7 @@ the important thing. It is the fact of doing that remains."</i><p><p align="cent
 
 ## Table of Contents
 - [About Hyperion](#about-hyperion)
-- [Building Hyperion](#about-hyperion)
+- [Building Hyperion](#building-hyperion)
 
 ## About Hyperion
 
@@ -32,16 +32,19 @@ of Hyperion, i.e
   ...
 ```
 
-Hyperion can be built on most modern Linux platforms. Currently only two
+Hyperion can be built on most modern Linux platforms. Currently only some specific
 platforms are supported through Bazel:
 
 + `//tools/platforms:bionic-linux-x86_64`
 + `//tools/platforms:disco-linux-x86_64`
++ `//tools/platforms:cortex-m7f-none`
 
 These can be switched between via Bazel flags `--host_platform=` and
-`--target_platforms=`. The differentiating feature between these two platforms
+`--target_platforms=`. The differentiating feature between the two ubuntu platforms
 as far as I can tell currently is whether or not Clang is built against
 `libtinfo6` or `libtinfo5`. For example, the Ubuntu Disco toolchain works on
 Arch Linux kernel version 5.0.8.
 
-All unit tests in the project can be tested via `bazel test //...`.
+All unit tests in the project can be tested via `bazel test //...`. Be aware that
+pending a patch to Bazel to allow something similar to CPU environment groups, this
+may break if some ocmponents are only meant to be built for a single platform.
