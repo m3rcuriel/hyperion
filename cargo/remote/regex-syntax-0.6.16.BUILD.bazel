@@ -23,10 +23,10 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "bench" with type "bench" omitted
 
 rust_library(
-    name = "winapi",
+    name = "regex_syntax",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2015",
@@ -36,22 +36,15 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.8",
+    version = "0.6.16",
     crate_features = [
-        "consoleapi",
-        "errhandlingapi",
-        "fileapi",
-        "libloaderapi",
-        "minwinbase",
-        "minwindef",
-        "ntsecapi",
-        "processenv",
-        "profileapi",
-        "std",
-        "winbase",
-        "wincon",
-        "winerror",
-        "winnt",
+        "unicode-age",
+        "unicode-bool",
+        "unicode-case",
+        "unicode-gencat",
+        "unicode-perl",
+        "unicode-script",
+        "unicode-segment",
     ],
 )
 

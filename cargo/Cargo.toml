@@ -17,6 +17,7 @@ cortex-m = "0.6"
 as-slice = "=0.1.0"
 bare-metal = "0.2.5"
 vcell = "0.1.2"
+bindgen = "0.53.1"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.
@@ -61,3 +62,9 @@ additional_flags = [
 additional_flags = [
     "--cfg=use_proc_macro",
 ]
+
+[raze.crates.bindgen.'0.53.1']
+gen_buildrs = true
+
+[raze.crates.clang-sys.'0.28.1']
+gen_buildrs = true

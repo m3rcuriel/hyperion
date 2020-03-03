@@ -17,6 +17,10 @@ alias(
     actual = "@raze__bare_metal__0_2_5//:bare_metal",
 )
 alias(
+    name = "bindgen",
+    actual = "@raze__bindgen__0_53_1//:bindgen",
+)
+alias(
     name = "cortex_m",
     actual = "@raze__cortex_m__0_6_2//:cortex_m",
 )
