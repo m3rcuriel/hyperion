@@ -159,9 +159,9 @@ rust_library(
         "env_logger",
         "log",
         "logging",
-        "runtime",
         "which",
         "which-rustfmt",
+        "runtime",
     ],
 )
 

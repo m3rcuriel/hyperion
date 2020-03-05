@@ -61,6 +61,8 @@ _hal_h_hdrs = glob([d + "/**/*.h" for d in _hal_header_dirs])
 
 _hal_hpp_hdrs = glob([d + "/**/*.hpp" for d in _hal_header_dirs])
 
+exports_files(["hal/src/main/native/include/hal/HAL.h"])
+
 cc_library(
     name = "hal",
     srcs = glob([

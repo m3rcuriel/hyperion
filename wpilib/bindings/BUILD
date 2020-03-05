@@ -5,6 +5,20 @@ load(
 
 rust_bindgen_library(
     name = "bindings",
-    header = "bindings.h",
+    bindgen_flags = [
+        "--enable-cxx-namespaces",
+        "--whitelist-type",
+        "HAL_\w+",
+        "--whitelist-function",
+        "HAL_\w+",
+        "--whitelist-var",
+        "HAL_\w+",
+    ],
+    clang_flags = [
+        "-x",
+        "c++",
+        "--std=c++17",
+    ],
+    header = "@allwpilib//:hal/src/main/native/include/hal/HAL.h",
     cc_lib = "@allwpilib//:hal",
 )

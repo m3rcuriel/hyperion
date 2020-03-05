@@ -98,3 +98,5 @@ register_rust_toolchains()
 load("//cargo:crates.bzl", "raze_fetch_remote_crates")
 
 raze_fetch_remote_crates()
+
+register_toolchains("//tools/rust:bindgen-toolchain")

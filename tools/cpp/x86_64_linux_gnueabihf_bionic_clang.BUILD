@@ -1,4 +1,4 @@
-package(default_visibility = ["@//tools/cpp:__subpackages__",
+package(default_visibility = ["@//tools:__subpackages__",
                               "@x86_64_clang_8_bionic//:__subpackages__"])
 
 filegroup(
@@ -55,6 +55,28 @@ filegroup(
     name = "strip",
     srcs = [
         "usr/bin/llvm-strip",
+    ],
+)
+
+cc_library(
+    name = "libclang.so",
+    srcs = [
+      "usr/lib/x86_64-linux-gnu/libclang-8.so.1",
+    ],
+)
+
+cc_library(
+    name = "libstdcxx.so",
+    srcs = [
+      "usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25",
+    ],
+    deps = [":libllvm.so"],
+)
+
+cc_library(
+    name = "libllvm.so",
+    srcs = [
+      "usr/lib/x86_64-linux-gnu/libLLVM-8.so.1",
     ],
 )
 

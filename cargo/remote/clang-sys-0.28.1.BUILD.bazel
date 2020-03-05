@@ -90,7 +90,7 @@ rust_library(
     deps = [
         "@raze__glob__0_3_0//:glob",
         "@raze__libc__0_2_67//:libc",
-        "@raze__libloading__0_5_2//:libloading",
+        "@//cargo/overrides/libloading-0.5.2:libloading",
     ],
     rustc_flags = [
         "--cap-lints=allow",
