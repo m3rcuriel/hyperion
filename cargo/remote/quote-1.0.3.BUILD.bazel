@@ -23,23 +23,25 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "compiletest" with type "test" omitted
 
 rust_library(
-    name = "libm",
+    name = "quote",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
+        "@raze__proc_macro2__1_0_9//:proc_macro2",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.4",
+    version = "1.0.3",
     crate_features = [
         "default",
-        "stable",
+        "proc-macro",
     ],
 )
 
+# Unsupported target "test" with type "test" omitted

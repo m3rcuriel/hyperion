@@ -33,6 +33,10 @@ alias(
     actual = "@raze__nalgebra__0_18_1//:nalgebra",
 )
 alias(
+    name = "nix",
+    actual = "@raze__nix__0_17_0//:nix",
+)
+alias(
     name = "proc_macro2",
     actual = "@raze__proc_macro2__1_0_9//:proc_macro2",
 )
