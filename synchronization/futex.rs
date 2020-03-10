@@ -140,9 +140,7 @@ fn gettid() -> libc::pid_t {
 }
 
 fn gettid_impl() -> libc::pid_t {
-    let result = unsafe { syscall(SYS_gettid) as libc::pid_t };
-
-    errno::Errno::result(result).expect("gettid() failed")
+    unsafe { syscall(SYS_gettid) as libc::pid_t }
 }
 
 static PTHREAD_ONCE: std::sync::Once = std::sync::Once::new();
