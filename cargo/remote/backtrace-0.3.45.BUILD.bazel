@@ -37,6 +37,7 @@ rust_library(
         "@raze__cfg_if__0_1_10//:cfg_if",
         "@raze__libc__0_2_67//:libc",
         "@raze__rustc_demangle__0_1_16//:rustc_demangle",
+        "@//cargo/overrides/backtrace-sys-0.1.32:backtrace_sys",
     ],
     rustc_flags = [
         "--cap-lints=allow",

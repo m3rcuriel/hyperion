@@ -34,7 +34,7 @@ additional_flags = [
   "--cfg=atomic_cas"
 ]
 
-[raze.crates.backtrace.'0.3.44']
+[raze.crates.backtrace.'0.3.45']
 gen_buildrs = true
 # Overriden to hand-written BUILD file, because libloading is building its own c portion.
 skipped_deps = [
