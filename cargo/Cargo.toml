@@ -18,6 +18,7 @@ as-slice = "=0.1.0"
 bare-metal = "0.2.5"
 vcell = "0.1.2"
 bindgen = "0.53.2"
+backtrace-sys = "=0.1.32"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.
@@ -33,7 +34,7 @@ additional_flags = [
   "--cfg=atomic_cas"
 ]
 
-[raze.crates.backtrace.'0.3.45']
+[raze.crates.backtrace.'0.3.44']
 gen_buildrs = true
 # Overriden to hand-written BUILD file, because libloading is building its own c portion.
 skipped_deps = [

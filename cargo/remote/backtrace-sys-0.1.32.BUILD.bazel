@@ -36,9 +36,8 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.33",
+    version = "0.1.32",
     crate_features = [
-        "backtrace-sys",
     ],
 )
 
