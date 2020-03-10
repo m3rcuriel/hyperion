@@ -24,24 +24,24 @@ load(
 )
 
 
+# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "aho_corasick",
+    name = "memchr",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__memchr__2_3_2//:memchr",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.7.8",
+    version = "2.3.3",
     crate_features = [
         "default",
-        "memchr",
         "std",
+        "use_std",
     ],
 )
 

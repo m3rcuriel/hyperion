@@ -25,20 +25,18 @@ load(
 
 
 rust_library(
-    name = "hermit_abi",
+    name = "version_check",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__libc__0_2_66//:libc",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.7",
+    version = "0.9.1",
     crate_features = [
-        "default",
     ],
 )
 

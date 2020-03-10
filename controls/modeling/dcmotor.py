@@ -10,22 +10,22 @@ class Motor(object):
 
         self.model = model
 
-        moment = moment + model.motor_inertia / gear_ratio ** 2.0
+        self.moment = moment + model.motor_inertia / gear_ratio ** 2.0
 
-        motor_torque = (
+        self.motor_torque = (
             efficiency
             * self.model.torque_constant
             / (gear_ratio * self.model.resistance)
         )
 
-        back_emf = self.model.torque_constant / (
+        self.back_emf = self.model.torque_constant / (
             self.model.velocity_constant * self.model.resistance * gear_ratio ** 2.0
         )
 
-        torque_to_acceleration = 1.0 / moment
+        self.torque_to_acceleration = 1.0 / self.moment
 
-        A_c = np.asarray([[0.0, 1.0], [0.0, -torque_to_acceleration * back_emf]])
-        B_c = np.asarray([[0.0], [torque_to_acceleration * motor_torque]])
+        A_c = np.asarray([[0.0, 1.0], [0.0, -self.torque_to_acceleration * self.back_emf]])
+        B_c = np.asarray([[0.0], [self.torque_to_acceleration * self.motor_torque]])
 
         self.C = np.asarray([0.0, sensor_ratio])
         self.D = np.asarray([[0.0]])

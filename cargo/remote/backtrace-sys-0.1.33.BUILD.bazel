@@ -25,18 +25,21 @@ load(
 
 
 rust_library(
-    name = "version_check",
+    name = "backtrace_sys",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
+        "@raze__libc__0_2_67//:libc",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.5",
+    version = "0.1.33",
     crate_features = [
+        "backtrace-sys",
     ],
 )
 
+# Unsupported target "build-script-build" with type "custom-build" omitted

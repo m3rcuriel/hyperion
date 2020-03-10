@@ -40,9 +40,9 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__aho_corasick__0_7_8//:aho_corasick",
-        "@raze__memchr__2_3_2//:memchr",
-        "@raze__regex_syntax__0_6_14//:regex_syntax",
+        "@raze__aho_corasick__0_7_10//:aho_corasick",
+        "@raze__memchr__2_3_3//:memchr",
+        "@raze__regex_syntax__0_6_16//:regex_syntax",
         "@raze__thread_local__1_0_1//:thread_local",
     ],
     rustc_flags = [

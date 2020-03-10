@@ -53,7 +53,7 @@ extra_aliased_targets = [
   "cargo_bin_svd2rust"
 ]
 
-[raze.crates.libc.'0.2.66']
+[raze.crates.libc.'0.2.67']
 additional_flags = [
    "--cfg=libc_core_cvoid",
    "--cfg=libc_priv_mod_use",
@@ -62,7 +62,7 @@ additional_flags = [
    "--cfg=libc_packedN",
 ]
 
-[raze.crates.proc-macro2.'1.0.8']
+[raze.crates.proc-macro2.'1.0.9']
 additional_flags = [
     "--cfg=use_proc_macro",
 ]

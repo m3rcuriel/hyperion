@@ -33,12 +33,14 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
+        "@raze__libm__0_2_1//:libm",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
     version = "0.2.11",
     crate_features = [
+        "libm",
     ],
 )
 

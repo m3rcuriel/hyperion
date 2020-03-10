@@ -35,12 +35,12 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__backtrace__0_3_44//:backtrace",
+        "@raze__backtrace__0_3_45//:backtrace",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.12.1",
+    version = "0.12.2",
     crate_features = [
         "backtrace",
         "default",
@@ -48,29 +48,7 @@ rust_library(
     ],
 )
 
-rust_binary(
-    # Prefix bin name to disambiguate from (probable) collision with lib name
-    # N.B.: The exact form of this is subject to change.
-    name = "cargo_bin_has_backtrace",
-    crate_root = "src/bin/has_backtrace.rs",
-    edition = "2015",
-    srcs = glob(["**/*.rs"]),
-    deps = [
-        # Binaries get an implicit dependency on their crate's lib
-        ":error_chain",
-        "@raze__backtrace__0_3_44//:backtrace",
-    ],
-    rustc_flags = [
-        "--cap-lints=allow",
-    ],
-    version = "0.12.1",
-    crate_features = [
-        "backtrace",
-        "default",
-        "example_generated",
-    ],
-)
-
+# Unsupported target "has_backtrace" with type "example" omitted
 # Unsupported target "quick_main" with type "test" omitted
 # Unsupported target "quickstart" with type "example" omitted
 # Unsupported target "size" with type "example" omitted

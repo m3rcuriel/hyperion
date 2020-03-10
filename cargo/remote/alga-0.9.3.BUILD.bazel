@@ -12,8 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # "MIT"
-  "unencumbered", # "Unlicense"
+  "notice", # "Apache-2.0"
 ])
 
 load(
@@ -24,24 +23,28 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "memchr",
+    name = "alga",
     crate_root = "src/lib.rs",
     crate_type = "lib",
-    edition = "2015",
+    edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
+        "@raze__approx__0_3_2//:approx",
+        "@raze__num_complex__0_2_4//:num_complex",
+        "@raze__num_traits__0_2_11//:num_traits",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "2.3.2",
+    version = "0.9.3",
     crate_features = [
-        "default",
         "std",
-        "use_std",
     ],
 )
 
+# Unsupported target "derive" with type "test" omitted
+# Unsupported target "one_operator" with type "test" omitted
+# Unsupported target "vectors" with type "example" omitted
+# Unsupported target "vectors" with type "test" omitted

@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # "Apache-2.0"
+  "notice", # "MIT,Apache-2.0"
 ])
 
 load(
@@ -25,27 +25,20 @@ load(
 
 
 rust_library(
-    name = "alga",
+    name = "hermit_abi",
     crate_root = "src/lib.rs",
     crate_type = "lib",
-    edition = "2018",
+    edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__approx__0_3_2//:approx",
-        "@raze__libm__0_1_4//:libm",
-        "@raze__num_complex__0_2_4//:num_complex",
-        "@raze__num_traits__0_2_11//:num_traits",
+        "@raze__libc__0_2_67//:libc",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.9.2",
+    version = "0.1.8",
     crate_features = [
-        "std",
+        "default",
     ],
 )
 
-# Unsupported target "derive" with type "test" omitted
-# Unsupported target "one_operator" with type "test" omitted
-# Unsupported target "vectors" with type "example" omitted
-# Unsupported target "vectors" with type "test" omitted

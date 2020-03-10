@@ -32,7 +32,7 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__libc__0_2_66//:libc",
+        "@raze__libc__0_2_67//:libc",
         "@raze__rand_core__0_4_2//:rand_core",
     ],
     rustc_flags = [

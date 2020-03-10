@@ -62,7 +62,5 @@ class Vex775Pro(object):
             12.0 - self.resistance * self.free_current
         )
 
-        print(12.0 - self.resistance * self.free_current)
-
         self.torque_constant = self.stall_torque / self.stall_current
         self.motor_inertia = 0.00001187
