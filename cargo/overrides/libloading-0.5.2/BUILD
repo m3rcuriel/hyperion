@@ -36,7 +36,7 @@ rust_library(
     crate_root = "src/lib.rs",
     crate_type = "lib",
     rustc_flags = [
-    #    "--cap-lints allow",
+        "--cap-lints=allow",
     ],
     deps = [
         ":global_whatever",

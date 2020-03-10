@@ -35,7 +35,7 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__backtrace__0_3_44//:backtrace",
+        "@raze__backtrace__0_3_45//:backtrace",
     ],
     rustc_flags = [
         "--cap-lints=allow",

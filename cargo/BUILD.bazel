@@ -18,13 +18,13 @@ alias(
 )
 alias(
     name = "bindgen",
-    actual = "@raze__bindgen__0_53_1//:bindgen",
+    actual = "@raze__bindgen__0_53_2//:bindgen",
 )
 alias(
     # Extra aliased target, from raze configuration
     # N.B.: The exact form of this is subject to change.
     name = "cargo_bin_bindgen",
-    actual = "@raze__bindgen__0_53_1//:cargo_bin_bindgen",
+    actual = "@raze__bindgen__0_53_2//:cargo_bin_bindgen",
 )
 alias(
     name = "cortex_m",

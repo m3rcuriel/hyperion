@@ -17,7 +17,7 @@ cortex-m = "0.6"
 as-slice = "=0.1.0"
 bare-metal = "0.2.5"
 vcell = "0.1.2"
-bindgen = "0.53.1"
+bindgen = "0.53.2"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.
@@ -33,7 +33,7 @@ additional_flags = [
   "--cfg=atomic_cas"
 ]
 
-[raze.crates.backtrace.'0.3.44']
+[raze.crates.backtrace.'0.3.45']
 gen_buildrs = true
 # Overriden to hand-written BUILD file, because libloading is building its own c portion.
 skipped_deps = [
@@ -63,11 +63,11 @@ additional_flags = [
     "--cfg=use_proc_macro",
 ]
 
-[raze.crates.bindgen.'0.53.1']
+[raze.crates.bindgen.'0.53.2']
 gen_buildrs = true
 extra_aliased_targets = [ "cargo_bin_bindgen" ]
 
-[raze.crates.clang-sys.'0.28.1']
+[raze.crates.clang-sys.'0.29.2']
 gen_buildrs = true
 skipped_deps = [
     "libloading-0.5.2"

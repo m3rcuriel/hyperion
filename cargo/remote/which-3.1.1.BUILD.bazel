@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # "Apache-2.0,MIT"
+  "notice", # "MIT"
 ])
 
 load(
@@ -23,22 +23,22 @@ load(
 )
 
 
+# Unsupported target "basic" with type "test" omitted
 
 rust_library(
-    name = "cexpr",
+    name = "which",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__nom__4_2_3//:nom",
+        "@raze__libc__0_2_67//:libc",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.6",
+    version = "3.1.1",
     crate_features = [
     ],
 )
 
-# Unsupported target "clang" with type "test" omitted
