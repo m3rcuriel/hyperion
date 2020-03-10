@@ -1,5 +1,13 @@
 package(default_visibility = ["//visibility:public"])
 
+config_setting(
+    name = "for_roborio",
+    constraint_values = [
+        ":roborio",
+        "@bazel_tools//platforms:linux",
+    ],
+)
+
 constraint_value(
     name = "none",
     constraint_setting = "@bazel_tools//platforms:os",

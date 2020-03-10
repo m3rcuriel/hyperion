@@ -15,7 +15,7 @@ steps:
           config: .buildkite/docker-compose.yml
 
   - label: ":docker: Build Only (robotio)"
-    command: ./bazel --bazelrc=.buildkite/.bazelrc test //... --host_platform=//tools/platforms:bionic-linux-x86_64 --platforms=//tools/platforms:linux-roborio -- $(cat NO_BUILD_ROBORIO)
+    command: ./bazel --bazelrc=.buildkite/.bazelrc build //... --host_platform=//tools/platforms:bionic-linux-x86_64 --platforms=//tools/platforms:linux-roborio -- $(cat NO_BUILD_ROBORIO)
     plugins:
       - docker-compose#v3.0.3:
           run: hyperion
