@@ -107,21 +107,21 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__backtrace__0_3_45",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/backtrace/backtrace-0.3.45.crate",
+        name = "raze__backtrace__0_3_44",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/backtrace/backtrace-0.3.44.crate",
         type = "tar.gz",
-        sha256 = "ad235dabf00f36301792cfe82499880ba54c6486be094d1047b02bacb67c14e8",
-        strip_prefix = "backtrace-0.3.45",
-        build_file = Label("//cargo/remote:backtrace-0.3.45.BUILD.bazel")
+        sha256 = "e4036b9bf40f3cf16aba72a3d65e8a520fc4bafcdc7079aea8f848c58c5b5536",
+        strip_prefix = "backtrace-0.3.44",
+        build_file = Label("//cargo/remote:backtrace-0.3.44.BUILD.bazel")
     )
 
     _new_http_archive(
-        name = "raze__backtrace_sys__0_1_33",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/backtrace-sys/backtrace-sys-0.1.33.crate",
+        name = "raze__backtrace_sys__0_1_32",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/backtrace-sys/backtrace-sys-0.1.32.crate",
         type = "tar.gz",
-        sha256 = "e17b52e737c40a7d75abca20b29a19a0eb7ba9fc72c5a72dd282a0a3c2c0dc35",
-        strip_prefix = "backtrace-sys-0.1.33",
-        build_file = Label("//cargo/remote:backtrace-sys-0.1.33.BUILD.bazel")
+        sha256 = "5d6575f128516de27e3ce99689419835fce9643a9b215a14d2b5b685be018491",
+        strip_prefix = "backtrace-sys-0.1.32",
+        build_file = Label("//cargo/remote:backtrace-sys-0.1.32.BUILD.bazel")
     )
 
     _new_http_archive(
