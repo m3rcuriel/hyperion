@@ -1,3 +1,19 @@
 load("//tools/rust:toolchains.bzl", "rust_bazel_toolchains")
 
 rust_bazel_toolchains()
+
+load("@io_bazel_rules_rust//bindgen:bindgen.bzl", "rust_bindgen_toolchain")
+
+rust_bindgen_toolchain(
+    name = "clang_8_bionic_bindgen",
+    bindgen = "//cargo:cargo_bin_bindgen",
+    clang = "@x86_64_clang_8_bionic//:clang",
+    libclang = "@x86_64_clang_8_bionic//:libclang.so",
+    libstdcxx = "@x86_64_clang_8_bionic//:libstdcxx.so",
+)
+
+toolchain(
+    name = "bindgen-toolchain",
+    toolchain = "clang_8_bionic_bindgen",
+    toolchain_type = "@io_bazel_rules_rust//bindgen:bindgen_toolchain",
+)

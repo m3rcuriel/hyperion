@@ -17,6 +17,8 @@ cortex-m = "0.6"
 as-slice = "=0.1.0"
 bare-metal = "0.2.5"
 vcell = "0.1.2"
+bindgen = "0.53.2"
+backtrace-sys = "=0.1.32"
 
 [raze]
 # The WORKSPACE relative path to the Cargo.toml working directory.
@@ -60,4 +62,17 @@ additional_flags = [
 [raze.crates.proc-macro2.'1.0.9']
 additional_flags = [
     "--cfg=use_proc_macro",
+]
+
+[raze.crates.bindgen.'0.53.2']
+gen_buildrs = true
+extra_aliased_targets = [ "cargo_bin_bindgen" ]
+
+[raze.crates.clang-sys.'0.29.2']
+gen_buildrs = true
+skipped_deps = [
+    "libloading-0.5.2"
+]
+additional_deps = [
+    "@//cargo/overrides/libloading-0.5.2:libloading",
 ]

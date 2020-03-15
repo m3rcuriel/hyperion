@@ -259,7 +259,7 @@ def _impl(ctx):
                     ACTION_NAMES.lto_backend,
                     ACTION_NAMES.clif_match,
                 ],
-                flag_groups = [flag_group(flags = ["-std=c++1y"])],
+                flag_groups = [flag_group(flags = ["-std=c++17"])],
             ),
             flag_set(
                 actions = [

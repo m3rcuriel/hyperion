@@ -41,6 +41,7 @@ rust_library(
         "consoleapi",
         "errhandlingapi",
         "fileapi",
+        "libloaderapi",
         "minwinbase",
         "minwindef",
         "ntsecapi",

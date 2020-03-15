@@ -32,7 +32,7 @@ rust_library(
     srcs = glob(["**/*.rs"]),
     deps = [
         "@raze__proc_macro2__1_0_9//:proc_macro2",
-        "@raze__quote__1_0_2//:quote",
+        "@raze__quote__1_0_3//:quote",
         "@raze__syn__1_0_16//:syn",
     ],
     rustc_flags = [

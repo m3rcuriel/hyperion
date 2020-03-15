@@ -44,10 +44,12 @@ cc_library(
         ":touch_backtrace_supported_header",
         ":touch_config_header",
     ],
-    copts = [
-        "-Wno-unused-but-set-variable",
-        "-fvisibility=hidden",
-        "-fPIC",
+    copts = select({
+        "//tools/platforms:for_roborio": ["-Wno-unused-but-set-variable"],
+        "//conditions:default": [],
+    }) + [
+      "-fvisibility=hidden",
+      "-fPIC",
     ],
     defines = [
         "BACKTRACE_ELF_SIZE=64",
