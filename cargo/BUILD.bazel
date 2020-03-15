@@ -13,6 +13,10 @@ alias(
     actual = "@raze__as_slice__0_1_0//:as_slice",
 )
 alias(
+    name = "backtrace_sys",
+    actual = "@raze__backtrace_sys__0_1_32//:backtrace_sys",
+)
+alias(
     name = "bare_metal",
     actual = "@raze__bare_metal__0_2_5//:bare_metal",
 )
@@ -29,8 +33,16 @@ alias(
     actual = "@raze__libc__0_2_67//:libc",
 )
 alias(
+    name = "lock_api",
+    actual = "@raze__lock_api__0_3_3//:lock_api",
+)
+alias(
     name = "nalgebra",
     actual = "@raze__nalgebra__0_18_1//:nalgebra",
+)
+alias(
+    name = "nix",
+    actual = "@raze__nix__0_17_0//:nix",
 )
 alias(
     name = "proc_macro2",

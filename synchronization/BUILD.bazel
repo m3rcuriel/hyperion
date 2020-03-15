@@ -1,0 +1,31 @@
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_doc", "rust_doc_test", "rust_library", "rust_test")
+
+rust_library(
+    name = "futex",
+    srcs = ["futex.rs"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cargo:libc",
+        "//cargo:lock_api",
+        "//cargo:nix",
+        "//utilities:unreachable",
+    ],
+)
+
+rust_test(
+    name = "futex_test",
+    srcs = ["futex_test.rs"],
+    deps = [
+        ":futex",
+    ],
+)
+
+rust_doc(
+    name = "futex_docs",
+    dep = ":futex",
+)
+
+rust_doc_test(
+    name = "futex_docs_test",
+    dep = ":futex",
+)

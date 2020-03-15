@@ -53,6 +53,8 @@ rust_library(
     version = "0.6.5",
     crate_features = [
         "alloc",
+        "rand_core",
+        "rand_jitter",
         "rand_os",
         "std",
     ],

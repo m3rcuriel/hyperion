@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # "MIT,Apache-2.0"
+  "notice", # "Apache-2.0,MIT"
 ])
 
 load(
@@ -23,24 +23,21 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
-# Unsupported target "cast" with type "test" omitted
 
 rust_library(
-    name = "num_traits",
+    name = "lock_api",
     crate_root = "src/lib.rs",
     crate_type = "lib",
-    edition = "2015",
+    edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__libm__0_2_1//:libm",
+        "@raze__scopeguard__1_1_0//:scopeguard",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.2.11",
+    version = "0.3.3",
     crate_features = [
-        "libm",
     ],
 )
 

@@ -1,4 +1,5 @@
 #!/bin/bash -norc
+set -euo pipefail
 
 cd "$BUILD_WORKSPACE_DIRECTORY/cargo"
 rm -rf remote
