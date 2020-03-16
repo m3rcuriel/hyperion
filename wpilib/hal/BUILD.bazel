@@ -1,0 +1,16 @@
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library")
+
+rust_library(
+    name = "error",
+    srcs = [
+        "lib.rs",
+        "digital.rs",
+        "error.rs",
+        "interrupts.rs",
+        "pneumatics.rs",
+        "robot_base.rs",
+    ],
+    deps = [
+        "//wpilib/bindings",
+    ],
+)
