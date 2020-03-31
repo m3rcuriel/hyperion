@@ -357,6 +357,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__nix__0_17_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/nix/nix-0.17.0.crate",
+        type = "tar.gz",
+        strip_prefix = "nix-0.17.0",
+
+        build_file = Label("//cargo/remote:nix-0.17.0.BUILD.bazel"),
+    )
+
+    _new_http_archive(
         name = "raze__num_complex__0_2_4",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/num-complex/num-complex-0.2.4.crate",
         type = "tar.gz",
@@ -731,6 +740,15 @@ def raze_fetch_remote_crates():
         strip_prefix = "version_check-0.9.1",
 
         build_file = Label("//cargo/remote:version_check-0.9.1.BUILD.bazel"),
+    )
+
+    _new_http_archive(
+        name = "raze__void__1_0_2",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/void/void-1.0.2.crate",
+        type = "tar.gz",
+        strip_prefix = "void-1.0.2",
+
+        build_file = Label("//cargo/remote:void-1.0.2.BUILD.bazel"),
     )
 
     _new_http_archive(

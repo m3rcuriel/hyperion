@@ -174,11 +174,13 @@ name = "compile_with_bazel"
 version = "0.0.0"
 dependencies = [
  "as-slice",
+ "backtrace",
  "bare-metal",
  "cortex-m",
  "flatbuffers",
  "libc",
  "nalgebra",
+ "nix",
  "proc-macro2",
  "svd2rust",
  "typenum",
@@ -341,6 +343,19 @@ dependencies = [
  "num-traits",
  "rand",
  "typenum",
+]
+
+[[package]]
+name = "nix"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "50e4785f2c3b7589a0d0c1dd60285e1188adac4006e8abd6dd578e1567027363"
+dependencies = [
+ "bitflags",
+ "cc",
+ "cfg-if",
+ "libc",
+ "void",
 ]
 
 [[package]]
@@ -719,6 +734,12 @@ name = "version_check"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "078775d0255232fb988e6fccf26ddc9d1ac274299aaedcedce21c6f72cc533ce"
+
+[[package]]
+name = "void"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d"
 
 [[package]]
 name = "volatile-register"
