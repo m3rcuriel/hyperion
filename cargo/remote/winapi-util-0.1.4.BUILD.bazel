@@ -12,7 +12,8 @@ package(default_visibility = [
 ])
 
 licenses([
-  "restricted", # "MIT OR Apache-2.0"
+  "notice", # "MIT"
+  "unencumbered", # "Unlicense"
 ])
 
 load(
@@ -25,20 +26,17 @@ load(
 
 
 rust_library(
-    name = "thiserror_impl",
+    name = "winapi_util",
     crate_root = "src/lib.rs",
-    crate_type = "proc-macro",
+    crate_type = "lib",
     edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__proc_macro2__1_0_9//:proc_macro2",
-        "@raze__quote__1_0_2//:quote",
-        "@raze__syn__1_0_16//:syn",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.0.11",
+    version = "0.1.4",
     crate_features = [
     ],
 )

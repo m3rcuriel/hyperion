@@ -23,23 +23,22 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "num_rational",
+    name = "hermit_abi",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__num_integer__0_1_42//:num_integer",
-        "@raze__num_traits__0_2_11//:num_traits",
+        "@raze__libc__0_2_68//:libc",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.2.3",
+    version = "0.1.10",
     crate_features = [
+        "default",
     ],
 )
 

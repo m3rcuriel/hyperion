@@ -32,9 +32,9 @@ rust_library(
     edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__anyhow__1_0_26//:anyhow",
+        "@raze__anyhow__1_0_28//:anyhow",
         "@raze__either__1_5_3//:either",
-        "@raze__thiserror__1_0_11//:thiserror",
+        "@raze__thiserror__1_0_14//:thiserror",
         "@raze__xmltree__0_8_0//:xmltree",
     ],
     rustc_flags = [

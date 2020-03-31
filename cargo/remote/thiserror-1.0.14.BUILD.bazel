@@ -23,28 +23,31 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
-# Unsupported target "features" with type "test" omitted
-# Unsupported target "marker" with type "test" omitted
+# Unsupported target "compiletest" with type "test" omitted
+# Unsupported target "test_deprecated" with type "test" omitted
+# Unsupported target "test_display" with type "test" omitted
+# Unsupported target "test_error" with type "test" omitted
+# Unsupported target "test_expr" with type "test" omitted
+# Unsupported target "test_from" with type "test" omitted
+# Unsupported target "test_option" with type "test" omitted
+# Unsupported target "test_path" with type "test" omitted
+# Unsupported target "test_source" with type "test" omitted
+# Unsupported target "test_transparent" with type "test" omitted
 
 rust_library(
-    name = "proc_macro2",
+    name = "thiserror",
     crate_root = "src/lib.rs",
     crate_type = "lib",
     edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__unicode_xid__0_2_0//:unicode_xid",
+        "@raze__thiserror_impl__1_0_14//:thiserror_impl",
     ],
     rustc_flags = [
         "--cap-lints=allow",
-        "--cfg=use_proc_macro",
     ],
-    version = "1.0.9",
+    version = "1.0.14",
     crate_features = [
-        "default",
-        "proc-macro",
     ],
 )
 
-# Unsupported target "test" with type "test" omitted

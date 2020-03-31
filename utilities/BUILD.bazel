@@ -14,3 +14,9 @@ rust_test(
     name = "custom_panic_test",
     crate = ":custom_panic",
 )
+
+rust_library(
+    name = "pcheck",
+    srcs = [ "pcheck.rs" ],
+    deps = [ "//cargo:nix" ],
+)

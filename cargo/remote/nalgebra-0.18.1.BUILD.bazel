@@ -38,12 +38,12 @@ rust_library(
     edition = "2018",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__alga__0_9_2//:alga",
+        "@raze__alga__0_9_3//:alga",
         "@raze__approx__0_3_2//:approx",
         "@raze__generic_array__0_12_3//:generic_array",
         "@raze__matrixmultiply__0_2_3//:matrixmultiply",
         "@raze__num_complex__0_2_4//:num_complex",
-        "@raze__num_rational__0_2_3//:num_rational",
+        "@raze__num_rational__0_2_4//:num_rational",
         "@raze__num_traits__0_2_11//:num_traits",
         "@raze__rand__0_6_5//:rand",
         "@raze__typenum__1_10_0//:typenum",
@@ -53,8 +53,10 @@ rust_library(
     ],
     version = "0.18.1",
     crate_features = [
+        "alga",
         "default",
         "matrixmultiply",
+        "rand",
         "std",
     ],
 )

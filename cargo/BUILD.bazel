@@ -17,6 +17,10 @@ alias(
     actual = "@raze__backtrace__0_3_44//:backtrace",
 )
 alias(
+    name = "backtrace_sys",
+    actual = "@raze__backtrace_sys__0_1_32//:backtrace_sys",
+)
+alias(
     name = "bare_metal",
     actual = "@raze__bare_metal__0_2_5//:bare_metal",
 )
@@ -30,7 +34,7 @@ alias(
 )
 alias(
     name = "libc",
-    actual = "@raze__libc__0_2_67//:libc",
+    actual = "@raze__libc__0_2_68//:libc",
 )
 alias(
     name = "nalgebra",
@@ -42,7 +46,7 @@ alias(
 )
 alias(
     name = "proc_macro2",
-    actual = "@raze__proc_macro2__1_0_9//:proc_macro2",
+    actual = "@raze__proc_macro2__1_0_10//:proc_macro2",
 )
 alias(
     name = "svd2rust",

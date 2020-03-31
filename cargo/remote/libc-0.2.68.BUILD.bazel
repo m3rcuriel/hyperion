@@ -23,29 +23,25 @@ load(
 )
 
 
-# Unsupported target "compiletest" with type "test" omitted
-# Unsupported target "test_display" with type "test" omitted
-# Unsupported target "test_error" with type "test" omitted
-# Unsupported target "test_from" with type "test" omitted
-# Unsupported target "test_option" with type "test" omitted
-# Unsupported target "test_path" with type "test" omitted
-# Unsupported target "test_source" with type "test" omitted
-# Unsupported target "test_transparent" with type "test" omitted
+# Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "const_fn" with type "test" omitted
 
 rust_library(
-    name = "thiserror",
+    name = "libc",
     crate_root = "src/lib.rs",
     crate_type = "lib",
-    edition = "2018",
+    edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__thiserror_impl__1_0_11//:thiserror_impl",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.0.11",
+    version = "0.2.68",
     crate_features = [
+        "default",
+        "extra_traits",
+        "std",
     ],
 )
 

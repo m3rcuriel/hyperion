@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # "Apache-2.0"
+  "notice", # "MIT,Apache-2.0"
 ])
 
 load(
@@ -23,29 +23,28 @@ load(
 )
 
 
+# Unsupported target "bench" with type "bench" omitted
 
 rust_library(
-    name = "alga",
+    name = "regex_syntax",
     crate_root = "src/lib.rs",
     crate_type = "lib",
-    edition = "2018",
+    edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__approx__0_3_2//:approx",
-        "@raze__libm__0_1_4//:libm",
-        "@raze__num_complex__0_2_4//:num_complex",
-        "@raze__num_traits__0_2_11//:num_traits",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.9.2",
+    version = "0.6.17",
     crate_features = [
-        "std",
+        "unicode-age",
+        "unicode-bool",
+        "unicode-case",
+        "unicode-gencat",
+        "unicode-perl",
+        "unicode-script",
+        "unicode-segment",
     ],
 )
 
-# Unsupported target "derive" with type "test" omitted
-# Unsupported target "one_operator" with type "test" omitted
-# Unsupported target "vectors" with type "example" omitted
-# Unsupported target "vectors" with type "test" omitted

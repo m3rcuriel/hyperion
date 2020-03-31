@@ -40,15 +40,15 @@ rust_library(
     edition = "2015",
     srcs = glob(["**/*.rs"]),
     deps = [
-        "@raze__aho_corasick__0_7_8//:aho_corasick",
+        "@raze__aho_corasick__0_7_10//:aho_corasick",
         "@raze__memchr__2_3_3//:memchr",
-        "@raze__regex_syntax__0_6_14//:regex_syntax",
+        "@raze__regex_syntax__0_6_17//:regex_syntax",
         "@raze__thread_local__1_0_1//:thread_local",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.3.4",
+    version = "1.3.6",
     crate_features = [
         "aho-corasick",
         "default",
@@ -58,6 +58,7 @@ rust_library(
         "perf-dfa",
         "perf-inline",
         "perf-literal",
+        "regex-syntax",
         "std",
         "thread_local",
         "unicode",
