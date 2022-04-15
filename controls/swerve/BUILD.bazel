@@ -1,0 +1,10 @@
+py_library(
+    name = "module",
+    srcs = [
+        "module.py",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//controls/modeling:integration",
+    ],
+)
