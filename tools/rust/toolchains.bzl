@@ -41,6 +41,13 @@ TARGET_DEFS = [
                 ],
                 sha256 = "7f0dd36ddb9c35aa373b1e6ff883eea527a2232d39d06b7e0b9e667004b596df",
             ),
+            _platform_target(
+                "arm-unknown-linux-gnueabi",
+                [
+                    "//tools/platforms:roborio",
+                    "@bazel_tools//platforms:linux",
+                ],
+            ),
         ],
     ),
 ]
